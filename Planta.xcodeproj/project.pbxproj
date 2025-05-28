@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		136CE1F32DE60BEA0047A993 /* SwiftfulRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 136CE1F22DE60BEA0047A993 /* SwiftfulRouting */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		136CE1C62DE49A700047A993 /* Planta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Planta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				136CE1F32DE60BEA0047A993 /* SwiftfulRouting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = Planta;
 			packageProductDependencies = (
+				136CE1F22DE60BEA0047A993 /* SwiftfulRouting */,
 			);
 			productName = Planta;
 			productReference = 136CE1C62DE49A700047A993 /* Planta.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 136CE1BD2DE49A700047A993;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				136CE1F12DE60BEA0047A993 /* XCRemoteSwiftPackageReference "SwiftfulRouting" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 136CE1C72DE49A700047A993 /* Products */;
 			projectDirPath = "";
@@ -349,6 +358,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		136CE1F12DE60BEA0047A993 /* XCRemoteSwiftPackageReference "SwiftfulRouting" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulRouting.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.1.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		136CE1F22DE60BEA0047A993 /* SwiftfulRouting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 136CE1F12DE60BEA0047A993 /* XCRemoteSwiftPackageReference "SwiftfulRouting" */;
+			productName = SwiftfulRouting;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 136CE1BE2DE49A700047A993 /* Project object */;
 }

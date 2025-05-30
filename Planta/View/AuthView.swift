@@ -8,7 +8,7 @@ struct AuthView: View {
   
   var body: some View {
     RouterView { _ in
-      VStack(spacing: 0) {
+      VStack(alignment: .leading, spacing: 0) {
         if !isFocused {
           BgImage
             .transition(.move(edge: .top).combined(with: .opacity))
@@ -37,16 +37,19 @@ struct AuthView: View {
   }
   
   private var BgImage: some View {
-    VStack(spacing: 0) {
-      ZStack {
-        Color(.appLight)
-          .ignoresSafeArea(edges: .top)
-        Image(.plantaBg)
-          .resizable()
-          .frame(height: 375)
-        
-      }
+    VStack(alignment: .leading) {
+      Rectangle()
+        .ignoresSafeArea(edges: .top)
+        .overlay(alignment: .bottomTrailing) {
+          Image(.appBg1)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 400, height: 400, alignment: .leading)
+            .offset(x: -5)
+        }
     }
+    .frame(height: 391)
+    .foregroundStyle(.appLight)
   }
   
   private var Logo: some View {

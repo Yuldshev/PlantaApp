@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GoodsSectionView<Destination: View>: View {
   @Environment(\.router) var router
+  @Binding var selectedTab: Tab
   
   let title: String
   let items: [Goods]
@@ -23,7 +24,7 @@ struct GoodsSectionView<Destination: View>: View {
         ForEach(limitedItems) { item in
           Button {
             router.showScreen(.push) { _ in
-              DetailsView(item: item)
+              DetailsView(item: item, selectedTab: $selectedTab)
             }
           } label: {
             CartGoodsView(item: item)

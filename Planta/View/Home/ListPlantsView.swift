@@ -4,6 +4,7 @@ struct ListPlantsView: View {
   @Environment(\.router) var router
   @EnvironmentObject var vm: OrderViewModel
   @State private var selectCategory: CategoryList = .all
+  @Binding var selectedTab: Tab
   
   private var filteredGoods: [Goods] {
     selectCategory.filteredGoods
@@ -21,7 +22,7 @@ struct ListPlantsView: View {
         LazyVGrid(columns: columns, spacing: 20) {
           ForEach(filteredGoods) { cart in
             Button {
-              router.showScreen(.push) { _ in DetailsView(item: cart).environmentObject(vm)}
+              router.showScreen(.push) { _ in DetailsView(item: cart, selectedTab: $selectedTab).environmentObject(vm)}
             } label: {
               CartGoodsView(item: cart)
                 .transition(.opacity.combined(with: .scale))
@@ -57,6 +58,6 @@ enum CategoryList: String, CaseIterable, Identifiable {
 }
 
 #Preview {
-  ListPlantsView()
+  ListPlantsView(selectedTab: .constant(.order))
     .previewRouter()
 }

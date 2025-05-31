@@ -2,7 +2,9 @@ import SwiftUI
 
 struct DetailsView: View {
   let item: Goods
+  @Binding var selectedTab: Tab
   @EnvironmentObject var vm: OrderViewModel
+  @Environment(\.router) var router
   
   
   let information = [
@@ -95,7 +97,7 @@ struct DetailsView: View {
   private var Order: some View {
     VStack {
       HStack {
-        CustomPicker()
+        CustomPicker(item: item)
           .environmentObject(vm)
         
         Spacer()
@@ -103,24 +105,26 @@ struct DetailsView: View {
         VStack {
           Text("Subtotal")
             .body(type: .regular)
-          Text(totalPrice().asCurrency)
+          Text(vm.totalPrice.asCurrency)
             .h1()
         }
       }
       
-      CustomButton(text: "Order Now", action: {})
+      CustomButton(text: "Order Now", color: vm.items[item] ?? 0 >= 1 ? .accent : .appLightGray) {
+        if vm.items[item] ?? 0 >= 1 {
+          router.dismissScreen()
+          selectedTab = .order
+        }
+      }
+      .disabled(vm.items[item] ?? 0 < 1)
         
     }
     .padding(.horizontal, 24)
   }
-  
-  private func totalPrice() -> Double {
-    return item.price * Double(vm.count)
-  }
 }
 
 #Preview {
-  DetailsView(item: Goods(name: "Dracaena reflexa", category: .indoor, image: "outdoor-1", price: 150))
+  DetailsView(item: Goods(name: "Dracaena reflexa", category: .indoor, image: "outdoor-1", price: 150), selectedTab: .constant(.order))
     .previewRouter()
     .environmentObject(OrderViewModel())
 }

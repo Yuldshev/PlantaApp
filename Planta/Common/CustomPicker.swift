@@ -2,24 +2,23 @@ import SwiftUI
 
 struct CustomPicker: View {
   @EnvironmentObject var vm: OrderViewModel
+  let item: Goods
   
   var body: some View {
     VStack {
-      Text("You picked \(vm.count) item")
+      Text("You picked \(vm.items[item] ?? 0) item")
         .body(type: .regular)
       HStack(spacing: 24) {
-        Button { vm.count += 1 } label: {
+        Button { vm.add(item) } label: {
           Image(.plusSquare)
             .foregroundStyle(.black)
         }
         
-        Text(vm.count.description)
+        Text("\(vm.items[item] ?? 0)")
           .sub(type: .regular)
         
         Button {
-          if vm.count > 0 {
-            vm.count -= 1
-          }
+          vm.remove(item)
         } label: {
           Image(.minusSquare)
             .foregroundStyle(.black)

@@ -10,10 +10,10 @@ struct HomeView: View {
       VStack(spacing: 0) {
         Hero
         VStack {
-          GoodsSectionView(title: "Plants", items: indoorList, limit: nil, destination: {
-            ListPlantsView().environmentObject(vm)}
+          GoodsSectionView(selectedTab: $selectedTab ,title: "Plants", items: indoorList, limit: nil, destination: {
+            ListPlantsView(selectedTab: $selectedTab).environmentObject(vm)}
           )
-          GoodsSectionView(title: "Equipments", items: equipmentList, limit: 6, destination: { ListEquipmentView().environmentObject(vm)})
+          GoodsSectionView(selectedTab: $selectedTab, title: "Equipments", items: equipmentList, limit: 6, destination: { ListEquipmentView(selectedTab: $selectedTab).environmentObject(vm)})
           BannerBalm
         }
         .padding(.horizontal, 24)
@@ -30,7 +30,7 @@ struct HomeView: View {
       
       Button {
         router.showScreen(.push) { _ in
-          ListPlantsView()
+          ListPlantsView(selectedTab: $selectedTab)
             .environmentObject(vm)
         }
       } label: {
@@ -51,7 +51,7 @@ struct HomeView: View {
       
       Button {
         router.showScreen(.push) { _ in
-          ListEquipmentView()
+          ListEquipmentView(selectedTab: $selectedTab)
             .environmentObject(vm)
         }
       } label: {

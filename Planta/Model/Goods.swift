@@ -1,6 +1,6 @@
 import Foundation
 
-struct Goods: Identifiable {
+struct Goods: Identifiable, Hashable {
   var id = UUID()
   let name: String
   let category: GoodsCategory

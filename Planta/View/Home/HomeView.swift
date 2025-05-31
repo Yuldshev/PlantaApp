@@ -1,34 +1,15 @@
 import SwiftUI
 
 struct HomeView: View {
-  private let columns = [
-    GridItem(.flexible(), spacing: 15),
-    GridItem(.flexible(), spacing: 15)
-  ]
+  @Environment(\.router) var router
   
   var body: some View {
-    
-      
-    
     ScrollView(.vertical, showsIndicators: false) {
       VStack(spacing: 0) {
-        VStack(spacing: 0) {
-          Rectangle()
-            .fill(.appLight)
-            .frame(height: 62)
-          Button(action: {}) {
-            HomeHiroView()
-          }
-        }
-        .scrollTransition { content, phase in
-          content
-            .opacity(phase.isIdentity ? 1 : 0)
-            .offset(y: phase.isIdentity ? 0 : -100)
-        }
-        
+        Hero
         VStack {
-          PlantsView
-          EquipmentsView
+          GoodsSectionView(title: "Plants", items: indoorList, limit: nil, destination: { ListPlantsView()})
+          GoodsSectionView(title: "Equipments", items: equipmentList, limit: 6, destination: { ListEquipmentView()})
           BannerBalm
         }
         .padding(.horizontal, 24)
@@ -37,45 +18,24 @@ struct HomeView: View {
     .ignoresSafeArea(edges: .top)
   }
   
-  private var PlantsView: some View {
-    VStack(alignment: .leading) {
-      Text("Plants")
-        .h1()
-        .padding(.top, 24)
-      LazyVGrid(columns: columns, spacing: 20) {
-        ForEach(indoorList) { item in
-          CartGoodsView(item: item)
+  private var Hero: some View {
+    VStack(spacing: 0) {
+      Rectangle()
+        .fill(.appLight)
+        .frame(height: 62)
+      
+      Button {
+        router.showScreen(.push) { _ in
+          ListPlantsView()
         }
+      } label: {
+        HomeHiroView()
       }
-      Button(action: {}) {
-        Text("See More")
-          .sub(type: .bold)
-          .foregroundStyle(.black)
-          .underline()
-      }
-      .padding(.top, 16)
-      .frame(maxWidth: .infinity, alignment: .trailing)
     }
-  }
-  
-  private var EquipmentsView: some View {
-    VStack(alignment: .leading) {
-      Text("Equipments")
-        .h1()
-        .padding(.top, 24)
-      LazyVGrid(columns: columns, spacing: 20) {
-        ForEach(equipmentList.prefix(6)) { item in
-          CartGoodsView(item: item)
-        }
-      }
-      Button(action: {}) {
-        Text("See More")
-          .sub(type: .bold)
-          .foregroundStyle(.black)
-          .underline()
-      }
-      .padding(.top, 16)
-      .frame(maxWidth: .infinity, alignment: .trailing)
+    .scrollTransition { content, phase in
+      content
+        .opacity(phase.isIdentity ? 1 : 0)
+        .offset(y: phase.isIdentity ? 0 : -100)
     }
   }
   
@@ -84,24 +44,31 @@ struct HomeView: View {
       Text("New")
         .h1()
       
-      HStack {
-        VStack(alignment: .leading, spacing: 4) {
-          Text("Lemon Balm Grow Kit ")
-            .sub(type: .bold)
-          Text("Include: Lemon Balm seeds, dung, Planta pot, marker...")
-            .body(type: .regular)
-            .foregroundStyle(.appLightGray)
-            .frame(width: 176)
+      Button {
+        router.showScreen(.push) { _ in
+          ListEquipmentView()
         }
-        
-        Image(.appBg3)
-          .resizable()
-          .scaledToFit()
+      } label: {
+        HStack {
+          VStack(alignment: .leading, spacing: 4) {
+            Text("Lemon Balm Grow Kit ")
+              .sub(type: .bold)
+              .foregroundStyle(.black)
+            Text("Include: Lemon Balm seeds, dung, Planta pot, marker...")
+              .body(type: .regular)
+              .foregroundStyle(.appLightGray)
+              .frame(width: 176)
+          }
+          
+          Image(.appBg3)
+            .resizable()
+            .scaledToFit()
+        }
+        .padding(.leading, 24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.appLight)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
       }
-      .padding(.leading, 24)
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .background(.appLight)
-      .clipShape(RoundedRectangle(cornerRadius: 8))
     }
     .padding(.vertical, 24)
   }
@@ -111,4 +78,5 @@ struct HomeView: View {
 
 #Preview {
   HomeView()
+    .previewRouter()
 }

@@ -88,7 +88,7 @@ struct AuthView: View {
       CustomButton(text: "Login / Register", color: isFocused ? .black : .appLightGray) {
         if vm.validate() {
           router.showScreen(.fullScreenCoverConfig()) { _ in
-            HomeView()
+            MainView()
           }
         }
       }
@@ -102,7 +102,7 @@ struct AuthView: View {
     VStack {
       Button(action: {
         router.showScreen(.fullScreenCoverConfig()) { _ in
-          HomeView()
+          MainView()
         }
       }) {
         Text("Not now")

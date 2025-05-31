@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ListPlantsView: View {
   @Environment(\.router) var router
+  @EnvironmentObject var vm: OrderViewModel
   @State private var selectCategory: CategoryList = .all
   
   private var filteredGoods: [Goods] {
@@ -20,7 +21,7 @@ struct ListPlantsView: View {
         LazyVGrid(columns: columns, spacing: 20) {
           ForEach(filteredGoods) { cart in
             Button {
-              router.showScreen(.push) { _ in DetailsView(item: cart)}
+              router.showScreen(.push) { _ in DetailsView(item: cart).environmentObject(vm)}
             } label: {
               CartGoodsView(item: cart)
                 .transition(.opacity.combined(with: .scale))

@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct HomeHiroView: View {
+  @Binding var selectedTab: Tab
+  
   var body: some View {
     VStack(alignment: .leading, spacing: 7) {
       Text("Planta - shining your little space")
@@ -25,7 +27,9 @@ struct HomeHiroView: View {
     .frame(height: 280)
     .background(.appLight)
     .overlay(alignment: .topTrailing) {
-      Button(action: {}) {
+      Button {
+        selectedTab = .order
+      } label: {
         Image(.cart)
           .foregroundStyle(.black)
           .padding(18)
@@ -43,5 +47,5 @@ struct HomeHiroView: View {
 }
 
 #Preview {
-    HomeHiroView()
+  HomeHiroView(selectedTab: .constant(.order))
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ListEquipmentView: View {
   @Environment(\.router) var router
+  @EnvironmentObject var vm: OrderViewModel
   
   private let columns = [
     GridItem(.flexible(), spacing: 15),
@@ -13,7 +14,7 @@ struct ListEquipmentView: View {
       LazyVGrid(columns: columns, spacing: 20) {
         ForEach(equipmentList) { item in
           Button {
-            router.showScreen(.push) { _ in DetailsView(item: item) }
+            router.showScreen(.push) { _ in DetailsView(item: item).environmentObject(vm) }
           } label: {
             CartGoodsView(item: item)
           }

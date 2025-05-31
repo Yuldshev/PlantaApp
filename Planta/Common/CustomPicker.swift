@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CustomPicker: View {
-  @StateObject private var vm = OrderViewModel()
+  @EnvironmentObject var vm: OrderViewModel
   
   var body: some View {
     VStack {

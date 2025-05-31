@@ -2,7 +2,8 @@ import SwiftUI
 
 struct DetailsView: View {
   let item: Goods
-  @StateObject var vm = OrderViewModel()
+  @EnvironmentObject var vm: OrderViewModel
+  
   
   let information = [
     ("Mass", "1kg"),
@@ -95,6 +96,7 @@ struct DetailsView: View {
     VStack {
       HStack {
         CustomPicker()
+          .environmentObject(vm)
         
         Spacer()
         
@@ -120,4 +122,5 @@ struct DetailsView: View {
 #Preview {
   DetailsView(item: Goods(name: "Dracaena reflexa", category: .indoor, image: "outdoor-1", price: 150))
     .previewRouter()
+    .environmentObject(OrderViewModel())
 }

@@ -1,15 +1,19 @@
 import SwiftUI
 
 struct HomeView: View {
+  @EnvironmentObject var vm: OrderViewModel
   @Environment(\.router) var router
+  @Binding var selectedTab: Tab
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack(spacing: 0) {
         Hero
         VStack {
-          GoodsSectionView(title: "Plants", items: indoorList, limit: nil, destination: { ListPlantsView()})
-          GoodsSectionView(title: "Equipments", items: equipmentList, limit: 6, destination: { ListEquipmentView()})
+          GoodsSectionView(title: "Plants", items: indoorList, limit: nil, destination: {
+            ListPlantsView().environmentObject(vm)}
+          )
+          GoodsSectionView(title: "Equipments", items: equipmentList, limit: 6, destination: { ListEquipmentView().environmentObject(vm)})
           BannerBalm
         }
         .padding(.horizontal, 24)
@@ -27,9 +31,10 @@ struct HomeView: View {
       Button {
         router.showScreen(.push) { _ in
           ListPlantsView()
+            .environmentObject(vm)
         }
       } label: {
-        HomeHiroView()
+        HomeHiroView(selectedTab: $selectedTab)
       }
     }
     .scrollTransition { content, phase in
@@ -47,6 +52,7 @@ struct HomeView: View {
       Button {
         router.showScreen(.push) { _ in
           ListEquipmentView()
+            .environmentObject(vm)
         }
       } label: {
         HStack {
@@ -77,6 +83,6 @@ struct HomeView: View {
 
 
 #Preview {
-  HomeView()
+  HomeView(selectedTab: .constant(.home))
     .previewRouter()
 }

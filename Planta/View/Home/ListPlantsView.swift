@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ListPlantsView: View {
+  @Environment(\.router) var router
   @State private var selectCategory: CategoryList = .all
   
   private var filteredGoods: [Goods] {
@@ -18,8 +19,12 @@ struct ListPlantsView: View {
         CategorySelectorView(selected: $selectCategory)
         LazyVGrid(columns: columns, spacing: 20) {
           ForEach(filteredGoods) { cart in
-            CartGoodsView(item: cart)
-              .transition(.opacity.combined(with: .scale))
+            Button {
+              router.showScreen(.push) { _ in DetailsView(item: cart)}
+            } label: {
+              CartGoodsView(item: cart)
+                .transition(.opacity.combined(with: .scale))
+            }
           }
         }
         .animation(.easeInOut(duration: 0.4), value: selectCategory)

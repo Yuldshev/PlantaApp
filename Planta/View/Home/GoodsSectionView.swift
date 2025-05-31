@@ -17,10 +17,17 @@ struct GoodsSectionView<Destination: View>: View {
     VStack(alignment: .leading) {
       Text(title)
         .h1()
+        .foregroundStyle(.black)
         
       LazyVGrid(columns: columns, spacing: 20) {
         ForEach(limitedItems) { item in
-          CartGoodsView(item: item)
+          Button {
+            router.showScreen(.push) { _ in
+              DetailsView(item: item)
+            }
+          } label: {
+            CartGoodsView(item: item)
+          }
         }
       }
       

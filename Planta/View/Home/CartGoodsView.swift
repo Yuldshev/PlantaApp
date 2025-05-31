@@ -17,6 +17,7 @@ struct CartGoodsView: View {
       
       Text(item.name.capitalized)
         .sub(type: .bold)
+        .foregroundStyle(.black)
         .padding(.top, 4)
         .minimumScaleFactor(0.8)
         .lineLimit(0)

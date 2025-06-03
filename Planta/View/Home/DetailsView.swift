@@ -28,7 +28,7 @@ struct DetailsView: View {
       
       Order
     }
-    .inlineNavigation(title: item.name)
+    .inlineNavigation(title: item.name, isShow: true)
   }
   
   private var ImageItem: some View {

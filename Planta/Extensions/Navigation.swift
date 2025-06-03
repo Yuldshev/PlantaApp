@@ -3,6 +3,7 @@ import SwiftUI
 struct InlineNavigation: ViewModifier {
   @Environment(\.dismiss) var dismiss
   let title: String
+  let isShow: Bool
   
   func body(content: Content) -> some View {
     content
@@ -21,11 +22,13 @@ struct InlineNavigation: ViewModifier {
           }
         }
         
-        ToolbarItem(placement: .topBarTrailing) {
-          Button(action: {}) {
-            Image(.cart)
-              .foregroundStyle(.black)
-              .padding(.trailing, 14)
+        if isShow {
+          ToolbarItem(placement: .topBarTrailing) {
+            Button(action: {}) {
+              Image(.cart)
+                .foregroundStyle(.black)
+                .padding(.trailing, 14)
+            }
           }
         }
       }
@@ -61,8 +64,8 @@ struct OrderNavigation: ViewModifier {
 }
 
 extension View {
-  public func inlineNavigation(title: String) -> some View {
-    modifier(InlineNavigation(title: title))
+  public func inlineNavigation(title: String, isShow: Bool) -> some View {
+    modifier(InlineNavigation(title: title, isShow: isShow))
   }
   
   public func orderNavigation<T: View>(@ViewBuilder action: () -> T) -> some View {

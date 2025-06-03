@@ -34,7 +34,7 @@ struct ListPlantsView: View {
       }
       .padding(.horizontal, 20)
     }
-    .inlineNavigation(title: "Plants")
+    .inlineNavigation(title: "Plants", isShow: true)
   }
 }
 

@@ -1,30 +1,59 @@
 import Foundation
 
 final class OrderViewModel: ObservableObject {
-  @Published private(set) var items: [Goods: Int] = [:]
+  @Published var info: [InfoType: String] = [:]
+  @Published var deliveryMethod: DeliveryMethod = .fast
+  @Published var paymentMethod: PaymentMethod = .creditCard
   
-  func add(_ item: Goods) {
-    items[item, default: 0] += 1
+  @Published var errorMessage = ""
+  
+  private var dataService: DataServiceProtocol
+  
+  init(service: DataServiceProtocol = DataService()) {
+    self.dataService = service
+    loadEmailFromCache()
+    InfoType.allCases.forEach { info[$0] = "" }
   }
   
-  func remove(_ item: Goods) {
-    guard let currentCount = items[item], currentCount > 1 else {
-      items[item] = nil
-      return
+  var formIsValid: Bool {
+    allFieldsFilled && emailIsValid
+  }
+  
+  private var allFieldsFilled: Bool {
+    InfoType.allCases.allSatisfy { type in
+      !(info[type]?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
     }
-    
-    items[item] = currentCount - 1
   }
   
-  var totalCount: Int {
-    items.values.reduce(0, +)
+  private var emailIsValid: Bool {
+    guard let email = info[.email] else { return false }
+    return email.contains("@") && !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
   }
   
-  var totalPrice: Double {
-    items.reduce(0) { $0 + Double($1.value) * $1.key.price }
+  private func loadEmailFromCache() {
+    if let cachedUser = dataService.loadCache(key: .user, as: User.self) {
+      info[.email] = cachedUser.email
+    }
+  }
+}
+
+enum InfoType: String, CaseIterable {
+  case name, email, address, phone
+}
+
+enum DeliveryMethod: String, CaseIterable {
+  case fast, standard
+  
+  var estimatedDate: Date {
+    let days = self == .fast ? 7 : 16
+    return Calendar.current.date(byAdding: .day, value: days, to: Date()) ?? Date()
   }
   
-  func clear() {
-    items.removeAll()
+  var formattedDate: String {
+    estimatedDate.formatted()
   }
+}
+
+enum PaymentMethod: String, CaseIterable {
+  case creditCard, paypal, applePay
 }

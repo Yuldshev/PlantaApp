@@ -6,11 +6,6 @@ struct CartListView: View {
   
   var body: some View {
     HStack(spacing: 15) {
-      Button {} label: {
-        Image(.checkBoxOff)
-          .foregroundStyle(.black)
-      }
-      
       Image(item.image)
         .resizable()
         .scaledToFit()

@@ -7,7 +7,7 @@ struct CartView: View {
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
-      VStack {
+      VStack(spacing: 20.0) {
         ForEach(vm.orderedItems, id: \.items) { item, count in
           CartListView(item: item)
             .environmentObject(vm)
@@ -41,7 +41,7 @@ struct CartView: View {
         .body(type: .regular)
         
         CustomButton(text: "Proceed to Checkout") {
-          
+          router.showScreen(.push) { _ in CheckoutView(price: vm.totalPrice) }
         }
       }
       .padding(.horizontal, 24)

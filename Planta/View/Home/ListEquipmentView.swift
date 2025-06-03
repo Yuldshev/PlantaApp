@@ -23,7 +23,7 @@ struct ListEquipmentView: View {
       }
       .padding(20)
     }
-    .inlineNavigation(title: "Equipments")
+    .inlineNavigation(title: "Equipments", isShow: true)
   }
 }
 

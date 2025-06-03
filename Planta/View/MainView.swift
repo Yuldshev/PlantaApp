@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
-  @StateObject var vm = OrderViewModel()
+  @StateObject var vm = CartViewModel()
   @State private var selectedTab: Tab = .home
   
   init() { UITabBar.appearance().isHidden = true }
@@ -18,7 +18,7 @@ struct MainView: View {
             SearchView()
               .transition(.move(edge: .bottom).combined(with: .opacity))
           case .order:
-            OrderView()
+            CartView()
               .transition(.move(edge: .bottom).combined(with: .opacity))
               .environmentObject(vm)
           case .profile:
@@ -39,5 +39,5 @@ struct MainView: View {
 #Preview {
   MainView()
     .previewRouter()
-    .environmentObject(OrderViewModel())
+    .environmentObject(CartViewModel())
 }

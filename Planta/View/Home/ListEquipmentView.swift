@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ListEquipmentView: View {
   @Environment(\.router) var router
-  @EnvironmentObject var vm: OrderViewModel
+  @EnvironmentObject var vm: CartViewModel
   @Binding var selectedTab: Tab
   
   private let columns = [

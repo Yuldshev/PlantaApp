@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ListPlantsView: View {
   @Environment(\.router) var router
-  @EnvironmentObject var vm: OrderViewModel
+  @EnvironmentObject var vm: CartViewModel
   @State private var selectCategory: CategoryList = .all
   @Binding var selectedTab: Tab
   

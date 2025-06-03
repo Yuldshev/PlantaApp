@@ -3,7 +3,7 @@ import SwiftUI
 struct DetailsView: View {
   let item: Goods
   @Binding var selectedTab: Tab
-  @EnvironmentObject var vm: OrderViewModel
+  @EnvironmentObject var vm: CartViewModel
   @Environment(\.router) var router
   
   
@@ -97,7 +97,7 @@ struct DetailsView: View {
   private var Order: some View {
     VStack {
       HStack {
-        CustomPicker(item: item)
+        CustomPicker(item: item, isTextHidden: true)
           .environmentObject(vm)
         
         Spacer()
@@ -126,5 +126,5 @@ struct DetailsView: View {
 #Preview {
   DetailsView(item: Goods(name: "Dracaena reflexa", category: .indoor, image: "outdoor-1", price: 150), selectedTab: .constant(.order))
     .previewRouter()
-    .environmentObject(OrderViewModel())
+    .environmentObject(CartViewModel())
 }

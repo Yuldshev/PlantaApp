@@ -51,4 +51,5 @@ final class DataService: DataServiceProtocol {
 
 enum CacheKey: String {
   case user
+  case cart
 }

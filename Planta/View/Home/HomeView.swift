@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-  @EnvironmentObject var vm: OrderViewModel
+  @EnvironmentObject var vm: CartViewModel
   @Environment(\.router) var router
   @Binding var selectedTab: Tab
   
@@ -85,4 +85,5 @@ struct HomeView: View {
 #Preview {
   HomeView(selectedTab: .constant(.home))
     .previewRouter()
+    .environmentObject(CartViewModel())
 }

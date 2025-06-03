@@ -1,15 +1,21 @@
 import Foundation
 
-struct Goods: Identifiable, Hashable {
-  var id = UUID()
+struct Goods: Hashable, Codable, Identifiable {
+  var id: String { name }
+  
   let name: String
   let category: GoodsCategory
   let image: String
   let price: Double
 }
 
-enum GoodsCategory: String, CaseIterable {
+enum GoodsCategory: String, CaseIterable, Codable {
   case outdoor, indoor, equipment
+}
+
+struct CartItem: Codable {
+  let goods: Goods
+  let count: Int
 }
 
 let outdoorList: [Goods] = [

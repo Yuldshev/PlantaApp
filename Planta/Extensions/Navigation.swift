@@ -9,13 +9,11 @@ struct InlineNavigation: ViewModifier {
       .navigationBarTitleDisplayMode(.inline)
       .navigationBarBackButtonHidden()
       .toolbar {
-        //Header
         ToolbarItem(placement: .principal) {
           Text(title.uppercased())
             .sub(type: .bold)
         }
         
-        //Back button
         ToolbarItem(placement: .topBarLeading) {
           Button(action: { dismiss() }) {
             Image(.chevronLeft)
@@ -23,7 +21,6 @@ struct InlineNavigation: ViewModifier {
           }
         }
         
-        //Cart button
         ToolbarItem(placement: .topBarTrailing) {
           Button(action: {}) {
             Image(.cart)
@@ -35,8 +32,40 @@ struct InlineNavigation: ViewModifier {
   }
 }
 
+struct OrderNavigation: ViewModifier {
+  @Environment(\.dismiss) var dismiss
+  let action: AnyView
+  
+  func body(content: Content) -> some View {
+    content
+      .navigationBarTitleDisplayMode(.inline)
+      .navigationBarBackButtonHidden()
+      .toolbar {
+        ToolbarItem(placement: .topBarLeading) {
+          Button(action: { dismiss() }) {
+            Image(.chevronLeft)
+              .foregroundStyle(.black)
+          }
+        }
+        
+        ToolbarItem(placement: .principal) {
+          Text("CART")
+            .sub(type: .bold)
+        }
+        
+        ToolbarItem(placement: .topBarTrailing) {
+          action
+        }
+      }
+  }
+}
+
 extension View {
   public func inlineNavigation(title: String) -> some View {
     modifier(InlineNavigation(title: title))
+  }
+  
+  public func orderNavigation<T: View>(@ViewBuilder action: () -> T) -> some View {
+    modifier(OrderNavigation(action: AnyView(action())))
   }
 }

@@ -1,13 +1,17 @@
 import SwiftUI
 
 struct CustomPicker: View {
-  @EnvironmentObject var vm: OrderViewModel
+  @EnvironmentObject var vm: CartViewModel
   let item: Goods
+  let isTextHidden: Bool
   
   var body: some View {
     VStack {
-      Text("You picked \(vm.items[item] ?? 0) item")
-        .body(type: .regular)
+      if isTextHidden {
+        Text("You picked \(vm.items[item] ?? 0) item")
+          .body(type: .regular)
+      }
+      
       HStack(spacing: 24) {
         Button { vm.add(item) } label: {
           Image(.plusSquare)

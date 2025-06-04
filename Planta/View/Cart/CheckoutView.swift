@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CheckoutView: View {
+  @Environment(\.router) var router
   @StateObject var vm = OrderViewModel()
   let price: Double
   
@@ -24,7 +25,9 @@ struct CheckoutView: View {
         .padding(.bottom, 8)
         
         CustomButton(text: "Continue", color: vm.formIsValid ? .accent : .appLightGray) {
-          
+          if vm.paymentMethod == .creditCard {
+            router.showScreen(.push) { _ in DebitCard() }
+          }
         }
         .disabled(!vm.formIsValid)
       }
@@ -32,6 +35,7 @@ struct CheckoutView: View {
       .body(type: .regular)
       .padding(.horizontal, 24)
       .background(.white)
+      .onAppear { vm.loadEmailFromCache() }
     }
   }
   

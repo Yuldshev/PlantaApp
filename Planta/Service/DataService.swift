@@ -18,7 +18,7 @@ final class DataService: DataServiceProtocol {
       let encoded = try JSONEncoder().encode(data)
       userDefaults.set(encoded, forKey: fullkey)
     } catch {
-      print(error)
+      print("Error saving data: \(error)")
     }
   }
   
@@ -29,7 +29,7 @@ final class DataService: DataServiceProtocol {
     do {
       return try JSONDecoder().decode(T.self, from: data)
     } catch {
-      print(error)
+      print("Error loading data: \(error)")
       return nil
     }
   }
@@ -44,7 +44,7 @@ final class DataService: DataServiceProtocol {
       .forEach { userDefaults.removeObject(forKey: $0) }
   }
   
-  func namespaced(_ key: CacheKey) -> String {
+  private func namespaced(_ key: CacheKey) -> String {
     return namespace + key.rawValue
   }
 }
@@ -52,4 +52,11 @@ final class DataService: DataServiceProtocol {
 enum CacheKey: String {
   case user
   case cart
+  
+  var type: Any.Type {
+    switch self {
+      case .user: return User.self
+      case .cart: return [CartItem].self
+    }
+  }
 }

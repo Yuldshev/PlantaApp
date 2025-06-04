@@ -115,7 +115,8 @@ struct AuthView: View {
 }
 
 #Preview {
-  RouterView { _ in
-    AuthView()
-  }
+  AuthView()
+    .previewRouter()
+    .environmentObject(CartViewModel())
+  
 }

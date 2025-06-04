@@ -11,7 +11,6 @@ final class OrderViewModel: ObservableObject {
   
   init(service: DataServiceProtocol = DataService()) {
     self.dataService = service
-    loadEmailFromCache()
     InfoType.allCases.forEach { info[$0] = "" }
   }
   
@@ -30,9 +29,13 @@ final class OrderViewModel: ObservableObject {
     return email.contains("@") && !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
   }
   
-  private func loadEmailFromCache() {
+  func loadEmailFromCache() {
+    print("Attempting to load user from cache")
     if let cachedUser = dataService.loadCache(key: .user, as: User.self) {
+      print("Successfully loaded user: \(cachedUser)")
       info[.email] = cachedUser.email
+    } else {
+      print("Failed to load user from cache")
     }
   }
 }

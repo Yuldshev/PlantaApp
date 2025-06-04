@@ -27,7 +27,9 @@ final class AuthViewModel: ObservableObject {
     errorMessage = nil
     
     let user = User(name: "", email: email)
-    dataService.saveCache(user.email, key: .user)
+    print("Attempting to save user: \(user)")
+    dataService.saveCache(user, key: .user)
+    print("User saved successfully")
     
     return true
   }

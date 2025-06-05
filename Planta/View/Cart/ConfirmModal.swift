@@ -1,14 +1,16 @@
 import SwiftUI
 
-struct ConfirmClearModal: View {
+struct ConfirmModal: View {
+  let title: String
+  let subtitle: String
   let onConfirm: () -> Void
   let onCancel: () -> Void
   
   var body: some View {
     VStack {
-      Text("Delete all orders?")
+      Text(title)
         .sub(type: .bold)
-      Text("This cannot be undone")
+      Text(subtitle)
         .body(type: .regular)
         .foregroundStyle(.appLightGray)
         .padding(.bottom, 16)

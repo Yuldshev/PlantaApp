@@ -18,7 +18,7 @@ struct MainView: View {
             SearchView()
               .transition(.move(edge: .bottom).combined(with: .opacity))
           case .order:
-            CartView()
+            CartView(selectedTab: $selectedTab)
               .transition(.move(edge: .bottom).combined(with: .opacity))
               .environmentObject(vm)
           case .profile:

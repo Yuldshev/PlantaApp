@@ -4,29 +4,28 @@ final class OrderViewModel: ObservableObject {
   @Published var info: [InfoType: String] = [:]
   @Published var deliveryMethod: DeliveryMethod = .fast
   @Published var paymentMethod: PaymentMethod = .creditCard
-  
-  @Published var errorMessage = ""
+  @Published var creditCardData: [CreditCard: String] = [:]
   
   private var dataService: DataServiceProtocol
   
   init(service: DataServiceProtocol = DataService()) {
     self.dataService = service
     InfoType.allCases.forEach { info[$0] = "" }
+    CreditCard.allCases.forEach { creditCardData[$0] = "" }
   }
   
   var formIsValid: Bool {
-    allFieldsFilled && emailIsValid
-  }
-  
-  private var allFieldsFilled: Bool {
     InfoType.allCases.allSatisfy { type in
-      !(info[type]?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
+      let value = info[type]?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+      return !value.isEmpty && (type != .email || value.contains("@"))
     }
   }
   
-  private var emailIsValid: Bool {
-    guard let email = info[.email] else { return false }
-    return email.contains("@") && !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+  var cardFormIsValid: Bool {
+    CreditCard.allCases.allSatisfy { type in
+      let value = creditCardData[type]?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+      return !value.isEmpty
+    }
   }
   
   func loadEmailFromCache() {
@@ -59,4 +58,8 @@ enum DeliveryMethod: String, CaseIterable {
 
 enum PaymentMethod: String, CaseIterable {
   case creditCard, paypal, applePay
+}
+
+enum CreditCard: String, CaseIterable {
+  case pin, cardName, expirationDate, cvc
 }

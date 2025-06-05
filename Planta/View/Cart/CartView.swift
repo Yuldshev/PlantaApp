@@ -3,6 +3,7 @@ import SwiftUI
 struct CartView: View {
   @Environment(\.router) var router
   @EnvironmentObject var vm: CartViewModel
+  @Binding var selectedTab: Tab
   @State private var isClear = false
   
   var body: some View {
@@ -19,7 +20,7 @@ struct CartView: View {
     .orderNavigation {
       Button {
         router.showBottomModal {
-          ConfirmClearModal(onConfirm: {
+          ConfirmModal(title: "Delete all orders?", subtitle: "This cannot be undone", onConfirm: {
             vm.clear()
             router.dismissModal()
           }, onCancel: { router.dismissModal() })
@@ -41,16 +42,17 @@ struct CartView: View {
         .body(type: .regular)
         
         CustomButton(text: "Proceed to Checkout") {
-          router.showScreen(.push) { _ in CheckoutView(price: vm.totalPrice) }
+          router.showScreen(.push) { _ in CheckoutView(selectedTab: $selectedTab, price: vm.totalPrice) }
         }
       }
       .padding(.horizontal, 24)
+      .padding(.bottom, 80)
     }
   }
 }
 
 #Preview {
-  CartView()
+  CartView(selectedTab: .constant(.home))
     .previewRouter()
     .environmentObject(CartViewModel())
 }

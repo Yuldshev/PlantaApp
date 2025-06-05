@@ -3,6 +3,7 @@ import SwiftUI
 struct CheckoutView: View {
   @Environment(\.router) var router
   @StateObject var vm = OrderViewModel()
+  @Binding var selectedTab: Tab
   let price: Double
   
   @State private var isValidate = false
@@ -26,7 +27,7 @@ struct CheckoutView: View {
         
         CustomButton(text: "Continue", color: vm.formIsValid ? .accent : .appLightGray) {
           if vm.paymentMethod == .creditCard {
-            router.showScreen(.push) { _ in DebitCard() }
+            router.showScreen(.push) { _ in DebitCard(selectedTab: $selectedTab, price: price).environmentObject(vm) }
           }
         }
         .disabled(!vm.formIsValid)
@@ -74,7 +75,7 @@ struct CheckoutView: View {
       
       VStack(alignment: .leading, spacing: 15) {
         DeliveryMethodPicker(
-          title: "Quick Shipping - $15",
+          title: "Quick Shipping - $30",
           subTitle: "Expected Shipping Date: \(DeliveryMethod.fast.formattedDate)",
           isCheck: vm.deliveryMethod == .fast
         ) {
@@ -82,7 +83,7 @@ struct CheckoutView: View {
         }
         
         DeliveryMethodPicker(
-          title: "COD - $20",
+          title: "COD - $18",
           subTitle: "Expected Shipping Date: \(DeliveryMethod.standard.formattedDate)",
           isCheck: vm.deliveryMethod == .standard
         ) {
@@ -139,6 +140,6 @@ struct CheckoutPriceRow: View {
 }
 
 #Preview {
-  CheckoutView(price: 300)
+  CheckoutView(selectedTab: .constant(.home), price: 300)
     .previewRouter()
 }

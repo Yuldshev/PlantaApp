@@ -31,5 +31,10 @@ extension View {
     self
       .font(Font.custom(type.rawValue, size: size))
   }
+  
+  func dynamicFont(type: Lato, isBold: Bool) -> some View {
+    self
+      .font(isBold ? Font.custom(type.rawValue, size: 16) : Font.custom(type.rawValue, size: 14))
+  }
 }
 

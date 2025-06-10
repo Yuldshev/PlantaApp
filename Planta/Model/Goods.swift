@@ -19,7 +19,6 @@ struct CartItem: Codable {
 }
 
 let outdoorList: [Goods] = [
-  //Outdoor
   Goods(name: "Dracaena reflexa", category: .outdoor, image: "outdoor-1", price: 150),
   Goods(name: "Rubber plant", category: .outdoor, image: "outdoor-2", price: 120),
   Goods(name: "Banana palm", category: .outdoor, image: "outdoor-3", price: 180),

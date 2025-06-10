@@ -52,11 +52,13 @@ final class DataService: DataServiceProtocol {
 enum CacheKey: String {
   case user
   case cart
+  case recentSearch
   
   var type: Any.Type {
     switch self {
       case .user: return User.self
       case .cart: return [CartItem].self
+      case .recentSearch: return [String].self
     }
   }
 }

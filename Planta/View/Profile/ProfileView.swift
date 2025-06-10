@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
   @Environment(\.router) var router
+  @ObservedObject var appState: AppState
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
@@ -35,7 +36,7 @@ struct ProfileView: View {
       router.showScreen(.push) { _ in SecurePolicyView() }
     },
     ProfileMenuItem(title: "Logout") {
-      
+      appState.logout()
     }]
   }
 }
@@ -95,6 +96,6 @@ struct ProfileMenuItem: Identifiable {
 }
 
 #Preview {
-  ProfileView()
+  ProfileView(appState: AppState())
     .previewRouter()
 }

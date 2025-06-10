@@ -3,6 +3,7 @@ import SwiftfulRouting
 
 struct AuthView: View {
   @StateObject private var vm = AuthViewModel()
+  @ObservedObject var appState: AppState
   @FocusState var isFocused: Bool
   @Environment(\.router) var router
   
@@ -87,9 +88,7 @@ struct AuthView: View {
     VStack {
       CustomButton(text: "Login / Register", color: isFocused ? .black : .appLightGray) {
         if vm.validate() {
-          router.showScreen(.fullScreenCoverConfig()) { _ in
-            MainView()
-          }
+          appState.updateUser(email: vm.email)
         }
       }
       .disabled(!isFocused)
@@ -101,9 +100,7 @@ struct AuthView: View {
   private var SkipButton: some View {
     VStack {
       Button(action: {
-        router.showScreen(.fullScreenCoverConfig()) { _ in
-          MainView()
-        }
+        appState.updateUser(email: "exapmle@mail.com")
       }) {
         Text("Not now")
           .sub(type: .regular)
@@ -115,7 +112,7 @@ struct AuthView: View {
 }
 
 #Preview {
-  AuthView()
+  AuthView(appState: AppState())
     .previewRouter()
     .environmentObject(CartViewModel())
   

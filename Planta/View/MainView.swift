@@ -1,10 +1,9 @@
 import SwiftUI
 
 struct MainView: View {
+  @ObservedObject var appState: AppState
   @StateObject var vm = CartViewModel()
   @State private var selectedTab: Tab = .home
-  
-  init() { UITabBar.appearance().isHidden = true }
   
   var body: some View {
     ZStack {
@@ -22,7 +21,7 @@ struct MainView: View {
               .transition(.move(edge: .bottom).combined(with: .opacity))
               .environmentObject(vm)
           case .profile:
-            ProfileView()
+            ProfileView(appState: appState)
               .transition(.move(edge: .bottom).combined(with: .opacity))
         }
       }
@@ -37,7 +36,7 @@ struct MainView: View {
 }
 
 #Preview {
-  MainView()
+  MainView(appState: AppState())
     .previewRouter()
     .environmentObject(CartViewModel())
 }

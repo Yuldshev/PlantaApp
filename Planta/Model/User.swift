@@ -1,6 +1,8 @@
 import Foundation
 
 struct User: Codable, Equatable {
-  let name: String
   let email: String
+  let name: String?
+  let address: String?
+  let phone: String?
 }

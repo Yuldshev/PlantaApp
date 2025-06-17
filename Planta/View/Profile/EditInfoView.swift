@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct EditInfoView: View {
-  @ObservedObject var avm: AuthViewModel
+  @ObservedObject var authVM: AuthViewModel
   @Environment(\.router) var router
   
   var body: some View {
@@ -11,17 +11,20 @@ struct EditInfoView: View {
           .body(type: .regular)
           
         VStack(spacing: 15) {
-          CustomTextField(placeholder: "Name", isBold: false, height: 0.6, text: $avm.name)
-          CustomTextField(placeholder: "Email", isBold: false, height: 0.6, text: $avm.email)
-          CustomTextField(placeholder: "Address", isBold: false, height: 0.6, text: $avm.address)
-          CustomTextField(placeholder: "Phone", isBold: false, height: 0.6, text: $avm.phone)
-            .onChange(of: avm.phone) { oldValue, newValue in
-              avm.phone = avm.formatNumberPhone(with: newValue)
+          CustomTextField(placeholder: "Name", isBold: false, height: 0.6, text: $authVM.name)
+          CustomTextField(placeholder: "Email", isBold: false, height: 0.6, text: $authVM.email)
+          CustomTextField(placeholder: "Address", isBold: false, height: 0.6, text: $authVM.address)
+          CustomTextField(placeholder: "Phone", isBold: false, height: 0.6, text: $authVM.phone)
+            .onChange(of: authVM.phone) { _, newValue in
+              let formatted = newValue.formattedPhoneNumber()
+              if formatted != newValue {
+                authVM.phone = formatted
+              }
             }
         }
         .padding(.vertical, 15)
         
-        if let error = avm.errorMessage {
+        if let error = authVM.errorMessage {
           Text(error)
             .body(type: .regular)
             .foregroundStyle(.red)
@@ -32,17 +35,17 @@ struct EditInfoView: View {
       .inlineNavigation(title: "Edit Information", isShow: false)
     }
     .overlay(alignment: .bottom) {
-      CustomButton(text: "Save", color: avm.isValid ? .accent : .appLightGray) {
-        Task { await avm.saveFromData()}
+      CustomButton(text: "Save", color: authVM.isValid ? .accent : .appLightGray) {
+        Task { await authVM.saveFromData() }
         router.dismissScreen()
       }
-      .disabled(!avm.isValid)
+      .disabled(!authVM.isValid)
       .padding(.horizontal, 48)
     }
   }
 }
 
 #Preview {
-  EditInfoView(avm: AuthViewModel())
+  EditInfoView(authVM: AuthViewModel())
     .previewRouter()
 }

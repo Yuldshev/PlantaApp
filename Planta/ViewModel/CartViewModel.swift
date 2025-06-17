@@ -10,7 +10,7 @@ final class CartViewModel: ObservableObject {
     self.service = service
   }
   
-  func add(_ item: Goods) async {
+  func add(_ item: Goods) {
     if let index = items.firstIndex(where: { $0.goods == item }) {
       items[index].quantity += 1
     } else {
@@ -18,7 +18,7 @@ final class CartViewModel: ObservableObject {
     }
   }
   
-  func remove(_ item: Goods) async {
+  func remove(_ item: Goods) {
     guard let index = items.firstIndex(where: { $0.goods == item }) else { return }
     
     if items[index].quantity > 1 {
@@ -30,10 +30,10 @@ final class CartViewModel: ObservableObject {
   
   func clear() {
     items.removeAll()
-    service.removeCache(for: .cart)
+    Task { await service.removeCache(for: .cart) }
   }
   
-  //MARK: - Cache Service
+  // MARK: - Data persistence
   func saveCart(item: Goods, quantity: Int) async {
     let cartItem = Cart(goods: item, quantity: quantity)
     

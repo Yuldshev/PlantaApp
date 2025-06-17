@@ -68,7 +68,7 @@ struct DetailsView: View {
   }
   
   private var Price: some View {
-    Text(item.price.asCurrency)
+    Text(item.price.formattedNumber)
       .h1()
       .foregroundStyle(.accent)
   }
@@ -105,7 +105,7 @@ struct DetailsView: View {
         VStack {
           Text("Subtotal")
             .body(type: .regular)
-          Text((item.price * Double(quantity)).asCurrency)
+          Text((item.price * Double(quantity)).formattedNumber)
             .h1()
         }
       }

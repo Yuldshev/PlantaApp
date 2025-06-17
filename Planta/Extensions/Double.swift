@@ -1,7 +1,7 @@
 import Foundation
 
 extension Double {
-  var asCurrency: String {
+  var formattedNumber: String {
     let intValue = Int(self)
     let numberFormatter = NumberFormatter()
     numberFormatter.numberStyle = .currency

@@ -1,18 +1,5 @@
 import SwiftUI
 
-enum Tab: String, CaseIterable {
-  case home, search, order, profile
-  
-  var iconName: String {
-    switch self {
-      case .home: return "home"
-      case .search: return "search"
-      case .order: return "cart"
-      case .profile: return "user"
-    }
-  }
-}
-
 struct CustomTabView: View {
   @Binding var selectedTab: Tab
   
@@ -37,6 +24,7 @@ struct CustomTabView: View {
   }
 }
 
+//MARK: - TabIcon
 struct TabIcon: View {
   let tab: Tab
   let isSelected: Bool
@@ -62,6 +50,7 @@ struct TabIcon: View {
   }
 }
 
+//MARK: - Preview
 #Preview {
   CustomTabView(selectedTab: .constant(.home))
     .background(.red)

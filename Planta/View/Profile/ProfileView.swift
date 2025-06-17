@@ -7,7 +7,7 @@ struct ProfileView: View {
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack(spacing: 24) {
-        ProfileUserInfoView(vm: vm.authVM)
+        ProfileUserInfoView(authVM: vm.authVM)
         ProfileSection(title: "General", items: generalItem)
         ProfileSection(title: "Security", items: securityItem)
       }
@@ -18,10 +18,10 @@ struct ProfileView: View {
   
   private var generalItem: [ProfileMenuItem] {[
       ProfileMenuItem(title: "Edit Information") {
-        router.showScreen(.push) { _ in EditInfoView(avm: vm.authVM) }
+        router.showScreen(.push) { _ in EditInfoView(authVM: vm.authVM) }
       },
       ProfileMenuItem(title: "Transaction History") {
-        router.showScreen(.push) { _ in TransactionHistory(vm: vm.orderVM) }
+        router.showScreen(.push) { _ in TransactionHistory(orderVM: vm.orderVM) }
       },
       ProfileMenuItem(title: "Q & A") {
         router.showScreen(.push) { _ in QuestionView() }
@@ -43,7 +43,7 @@ struct ProfileView: View {
 
 //MARK: - ProfileUserInfoView
 struct ProfileUserInfoView: View {
-  @ObservedObject var vm: AuthViewModel
+  @ObservedObject var authVM: AuthViewModel
   
   var body: some View {
     HStack(spacing: 26) {
@@ -52,16 +52,16 @@ struct ProfileUserInfoView: View {
         .frame(width: 40, height: 40)
       
       VStack(alignment: .leading) {
-        Text(!vm.name.isEmpty ? vm.name : "Anonymous")
+        Text(!authVM.name.isEmpty ? authVM.name : "Anonymous")
           .sub(type: .bold)
-        Text(vm.email)
+        Text(authVM.email)
           .body(type: .regular)
           .foregroundStyle(.appLightGray)
       }
     }
     .padding(.vertical, 15)
     .frame(maxWidth: .infinity, alignment: .leading)
-    .task { await vm.loadFromData() }
+    .task { await authVM.loadFromData() }
   }
 }
 

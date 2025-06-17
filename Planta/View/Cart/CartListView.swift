@@ -24,7 +24,7 @@ struct CartListView: View {
             .foregroundStyle(.appLightGray)
         }
         
-        Text(item.goods.price.asCurrency)
+        Text(item.goods.price.formattedNumber)
           .sub(type: .bold)
           .foregroundStyle(.accent)
         
@@ -33,7 +33,7 @@ struct CartListView: View {
             .environmentObject(vm)
             .frame(width: 120)
           
-          Button { Task { await vm.remove(item.goods) } } label: {
+          Button {  vm.remove(item.goods) } label: {
             Text("Remove")
               .sub(type: .regular)
               .foregroundStyle(.black)

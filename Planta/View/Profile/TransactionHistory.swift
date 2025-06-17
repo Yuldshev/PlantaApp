@@ -1,17 +1,17 @@
 import SwiftUI
 
 struct TransactionHistory: View {
-  @ObservedObject var vm: OrderViewModel
+  @ObservedObject var orderVM: OrderViewModel
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack {
-        ForEach(vm.orders, id: \.date) { order in
+        ForEach(orderVM.orders, id: \.date) { order in
           OrderCardView(order: order)
         }
       }
       .padding(.horizontal, 48)
-      .task { await vm.loadOrders() }
+      .task { await orderVM.loadOrders() }
       .inlineNavigation(title: "Transaction history", isShow: false)
     }
   }
@@ -57,6 +57,6 @@ struct OrderCardView: View {
 }
 
 #Preview {
-  TransactionHistory(vm: OrderViewModel())
+  TransactionHistory(orderVM: OrderViewModel())
     .previewRouter()
 }

@@ -26,7 +26,7 @@ struct CartGoodsView: View {
       Text(item.category.rawValue.capitalized)
         .body(type: .regular)
         .foregroundStyle(.appLightGray)
-      Text(item.price.asCurrency)
+      Text(item.price.formattedNumber)
         .sub(type: .bold)
         .foregroundStyle(.accent)
     }

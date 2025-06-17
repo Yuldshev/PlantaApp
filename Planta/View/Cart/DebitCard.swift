@@ -8,7 +8,9 @@ struct DebitCard: View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack {
         BankInfo
-        PersonalInfo
+        if vm.authVM.isValid {
+          PersonalInfo
+        }
         DeliveryMethodView
       }
       .padding(.horizontal, 48)
@@ -16,17 +18,17 @@ struct DebitCard: View {
     .inlineNavigation(title: "Checkout", isShow: false)
     .overlay(alignment: .bottom) {
       VStack(alignment: .leading, spacing: 8) {
-        CheckoutPriceRow(title: "Subtotal", value: vm.cartVM.totalPrice.asCurrency)
-        CheckoutPriceRow(title: "Delivery Fee", value: (vm.orderVM.deliveryMethod == .fast ? 30 : 18).asCurrency)
-        CheckoutPriceRow(title: "Total", value: (vm.cartVM.totalPrice + (vm.orderVM.deliveryMethod == .fast ? 30 : 18)).asCurrency)
+        CheckoutPriceRow(title: "Subtotal", value: vm.cartVM.totalPrice.formattedNumber)
+        CheckoutPriceRow(title: "Delivery Fee", value: (vm.orderVM.deliveryMethod == .fast ? 30 : 18).formattedNumber)
+        CheckoutPriceRow(title: "Total", value: (vm.cartVM.totalPrice + (vm.orderVM.deliveryMethod == .fast ? 30 : 18)).formattedNumber)
         .padding(.bottom, 8)
         
-        CustomButton(text: "Continue", color: vm.orderVM.isFormValid ? .accent : .appLightGray) {
+        CustomButton(text: "Continue", color: vm.orderVM.isValid ? .accent : .appLightGray) {
           Task { await vm.orderVM.saveData(user: User(email: vm.authVM.email, name: vm.authVM.name, address: vm.authVM.address, phone: vm.authVM.phone), goods: vm.cartVM.items) }
           vm.cartVM.clear()
-          router.showScreen(.push) { _ in SuccessOrderView() }
+          router.showScreen(.push) { _ in SuccessOrderView(vm: vm) }
         }
-        .disabled(!vm.orderVM.isFormValid)
+        .disabled(!vm.orderVM.isValid)
       }
       .padding(.top)
       .body(type: .regular)
@@ -46,6 +48,12 @@ struct DebitCard: View {
       
       VStack(alignment: .leading, spacing: 15) {
         CustomTextField(placeholder: "Number Card", isBold: false, height: 0.6, text: $vm.orderVM.pin)
+          .onChange(of: vm.orderVM.pin) { _, newValue in
+            let formatted = newValue.formattedPin()
+            if formatted != newValue {
+              vm.orderVM.pin = formatted
+            }
+          }
         CustomTextField(placeholder: "Card Name", isBold: false, height: 0.6, text: $vm.orderVM.cardName)
         Button {
           router.showBasicModal { ExpirationDatePicker(vm: vm.orderVM) }

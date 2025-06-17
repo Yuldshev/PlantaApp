@@ -34,7 +34,7 @@ struct CartView: View {
         HStack {
           Text("Subtotal")
           Spacer()
-          Text(vm.cartVM.totalPrice.asCurrency)
+          Text(vm.cartVM.totalPrice.formattedNumber)
         }
         .body(type: .regular)
         

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SuccessOrderView: View {
+  @ObservedObject var vm: MainViewModel
   @Environment(\.router) var router
   @State var isAnimation = false
   
@@ -24,7 +25,8 @@ struct SuccessOrderView: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .overlay(alignment: .bottom) {
       CustomButton(text: "Back to Homepage") {
-        router.dismissEnvironment()
+        vm.cartVM.clear()
+        router.dismissPushStack()
       }
       .padding(.horizontal, 24)
       .padding(.bottom, 20)
@@ -40,6 +42,6 @@ struct SuccessOrderView: View {
 }
 
 #Preview {
-  SuccessOrderView()
+  SuccessOrderView(vm: MainViewModel())
     .previewRouter()
 }

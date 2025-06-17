@@ -11,8 +11,8 @@ final class SearchViewModel: ObservableObject {
     didSet { Task { await saveRecentSearches() } }
   }
   
+  private let maxRecentSearches = 5
   private var allGoods: [Goods]
-  private var maxRecentSearches = 5
   private var cancellables = Set<AnyCancellable>()
   
   init(allGoods: [Goods], service: DataServiceProtocol = DataService()) {

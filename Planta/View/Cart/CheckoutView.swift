@@ -18,16 +18,17 @@ struct CheckoutView: View {
     .inlineNavigation(title: "Checkout", isShow: false)
     .overlay(alignment: .bottom) {
       VStack(alignment: .leading, spacing: 8) {
-        CheckoutPriceRow(title: "Subtotal", value: vm.cartVM.totalPrice.asCurrency)
-        CheckoutPriceRow(title: "Delivery Fee", value: (vm.orderVM.deliveryMethod == .fast ? 30 : 18).asCurrency)
-        CheckoutPriceRow(title: "Total", value: (vm.cartVM.totalPrice + (vm.orderVM.deliveryMethod == .fast ? 30 : 18)).asCurrency)
+        CheckoutPriceRow(title: "Subtotal", value: vm.cartVM.totalPrice.formattedNumber)
+        CheckoutPriceRow(title: "Delivery Fee", value: (vm.orderVM.deliveryMethod == .fast ? 30 : 18).formattedNumber)
+        CheckoutPriceRow(title: "Total", value: (vm.cartVM.totalPrice + (vm.orderVM.deliveryMethod == .fast ? 30 : 18)).formattedNumber)
         .padding(.bottom, 8)
         
         CustomButton(text: "Continue") {
           if vm.orderVM.paymentMethod == .creditCard {
             router.showScreen(.push) { _ in DebitCard(vm: vm) }
           } else {
-            router.showScreen(.push) { _ in SuccessOrderView() }
+            Task { await vm.orderVM.saveData(user: User(email: "", name: "", address: "", phone: ""), goods: vm.cartVM.items) }
+            router.showScreen(.push) { _ in SuccessOrderView(vm: vm) }
           }
         }
       }

@@ -3,26 +3,26 @@ import Foundation
 protocol DataServiceProtocol {
   func saveCache<T: Encodable>(_ data: T, key: CacheKey) async
   func loadCache<T: Decodable>(key: CacheKey, as type: T.Type) async -> T?
-  func removeCache(for key: CacheKey)
-  func clearAllCache()
+  func removeCache(for key: CacheKey) async
+  func clearAllCache() async
 }
 
-final class DataService: DataServiceProtocol {
+actor DataService: DataServiceProtocol {
   private let userDefaults = UserDefaults.standard
   private let namespace = "AppCache"
   
-  func saveCache<T>(_ data: T, key: CacheKey) where T : Encodable {
-    let fullkey = namespaced(key)
+  func saveCache<T: Encodable>(_ data: T, key: CacheKey) async {
+    let fullKey = self.namespaced(key)
     
     do {
       let encoded = try JSONEncoder().encode(data)
-      userDefaults.set(encoded, forKey: fullkey)
+      self.userDefaults.set(encoded, forKey: fullKey)
     } catch {
       print("Error saving data: \(error)")
     }
   }
   
-  func loadCache<T>(key: CacheKey, as type: T.Type) -> T? where T : Decodable {
+  func loadCache<T: Decodable>(key: CacheKey, as type: T.Type) async -> T? {
     let fullkey = namespaced(key)
     guard let data = userDefaults.data(forKey: fullkey) else { return nil }
     
@@ -34,18 +34,18 @@ final class DataService: DataServiceProtocol {
     }
   }
   
-  func removeCache(for key: CacheKey) {
+  func removeCache(for key: CacheKey) async {
     userDefaults.removeObject(forKey: namespaced(key))
   }
   
-  func clearAllCache() {
+  func clearAllCache() async {
     userDefaults.dictionaryRepresentation().keys
       .filter { $0.hasPrefix(namespace) }
       .forEach { userDefaults.removeObject(forKey: $0) }
   }
   
   private func namespaced(_ key: CacheKey) -> String {
-    return namespace + key.rawValue
+    return "\(namespace).\(key.rawValue)"
   }
 }
 

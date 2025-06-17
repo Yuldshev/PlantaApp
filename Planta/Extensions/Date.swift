@@ -1,12 +1,6 @@
 import Foundation
 
 extension Date {
-  func formatted() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateStyle = .long
-    return dateFormatter.string(from: self)
-  }
-  
   func formattedWithOrdinalSuffix() -> String {
     let calendar = Calendar.current
     let day = calendar.component(.day, from: self)

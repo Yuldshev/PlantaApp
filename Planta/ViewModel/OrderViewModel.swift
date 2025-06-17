@@ -15,40 +15,25 @@ final class OrderViewModel: ObservableObject {
   @Published var expirationDate = Date()
   @Published var cvc = ""
   
-  var isFormValid: Bool {
-    validate()
-  }
+  @Published private(set) var isValid = false
+  @Published var errorMessage: String?
   
   private var dataService: DataServiceProtocol
+  private var validationService: ValidationServiceProtocol
   
-  init(service: DataServiceProtocol = DataService()) {
+  init(service: DataServiceProtocol = DataService(), validationService: ValidationServiceProtocol = ValidationService()) {
     self.dataService = service
+    self.validationService = validationService
+    validateAllFields()
   }
   
-  func validate() -> Bool {
-    let cleanPin = pin.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
-    guard cleanPin.count == 16 else { return false}
-    guard !cardName.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
-    guard cvc.count == 3, Int(cvc) != nil else { return false }
-    return true
+  func validateAllFields() {
+    let result = validationService.validateCard(pin: pin, cardName: cardName, cvc: cvc)
+    self.isValid = result.isFormValid
+    self.errorMessage = result.error
   }
   
-  func formattedPin(with number: String) -> String {
-    let cleanNumber = number.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
-    
-    let trimmed = String(cleanNumber.prefix(16))
-    
-    var grouped = [String]()
-    
-    for i in stride(from: 0, to: trimmed.count, by: 4) {
-      let start = trimmed.index(trimmed.startIndex, offsetBy: i)
-      let end = trimmed.index(start, offsetBy: min(4, trimmed.distance(from: start, to: trimmed.endIndex)))
-      grouped.append(String(trimmed[start..<end]))
-    }
-    
-    return grouped.joined(separator: " ")
-  }
-  
+  // MARK: - Data persistence
   func saveData(user: User, goods: [Cart]) async {
     let card = Card(pin: pin, cardName: cardName, expirationDate: expirationDate, cvc: cvc)
     let newOrder = Order(goods: goods, user: user, card: card, deliveryMethod: deliveryMethod, paymentMethod: paymentMethod, date: Date())
@@ -65,7 +50,7 @@ final class OrderViewModel: ObservableObject {
   
   func loadDebitCard() async {
     guard let orders = await dataService.loadCache(key: .order, as: [Order].self),
-    let lastCard = orders.last?.card else { return }
+          let lastCard = orders.last?.card else { return }
     
     pin = lastCard.pin
     cardName = lastCard.cardName

@@ -6,22 +6,17 @@ struct MainView: View {
   var body: some View {
     ZStack {
       VStack {
-        switch vm.tab {
-          case .home:
-            HomeView(vm: vm)
-              .transition(.move(edge: .bottom).combined(with: .opacity))
-          case .search:
-            SearchView()
-              .transition(.move(edge: .bottom).combined(with: .opacity))
-          case .order:
-            CartView(vm: vm)
-              .transition(.move(edge: .bottom).combined(with: .opacity))
-          case .profile:
-            ProfileView(vm: vm)
-              .transition(.move(edge: .bottom).combined(with: .opacity))
+        Group {
+          switch vm.tab {
+            case .home: HomeView(vm: vm)
+            case .search: SearchView()
+            case .order: CartView(vm: vm)
+            case .profile: ProfileView(vm: vm)
+          }
         }
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+        .animation(.easeInOut, value: vm.tab)
       }
-      .animation(.easeInOut, value: vm.tab)
       
       VStack {
         Spacer()
@@ -31,6 +26,7 @@ struct MainView: View {
   }
 }
 
+//MARK: - Preview
 #Preview {
   MainView(vm: MainViewModel())
     .previewRouter()

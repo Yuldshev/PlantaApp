@@ -1,17 +1,15 @@
 import SwiftUI
 
 struct CartView: View {
-  @Environment(\.router) var router
-  @EnvironmentObject var vm: CartViewModel
-  @Binding var selectedTab: Tab
+  @ObservedObject var vm: MainViewModel
   @State private var isClear = false
+  @Environment(\.router) var router
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack(spacing: 20.0) {
-        ForEach(vm.orderedItems, id: \.items) { item, count in
-          CartListView(item: item)
-            .environmentObject(vm)
+        ForEach(vm.cartVM.items, id: \.goods.id) { item in
+          CartListView(vm: vm.cartVM, item: item)
         }
       }
     }
@@ -21,28 +19,27 @@ struct CartView: View {
       Button {
         router.showBottomModal {
           ConfirmModal(title: "Delete all orders?", subtitle: "This cannot be undone", onConfirm: {
-            vm.clear()
-            router.dismissModal()
+            vm.cartVM.clear()
           }, onCancel: { router.dismissModal() })
         }
       } label: {
-        Image(vm.items.isEmpty ? .trashOff: .trashOn)
+        Image(vm.cartVM.items.isEmpty ? .trashOff: .trashOn)
           .foregroundStyle(.black)
       }
-      .disabled(vm.items.isEmpty)
+      .disabled(vm.cartVM.items.isEmpty)
     }
-    .onAppear { vm.loadCart() }
+    .task { await vm.cartVM.loadCart() }
     .overlay(alignment: .bottom) {
       VStack {
         HStack {
           Text("Subtotal")
           Spacer()
-          Text(vm.totalPrice.asCurrency)
+          Text(vm.cartVM.totalPrice.asCurrency)
         }
         .body(type: .regular)
         
         CustomButton(text: "Proceed to Checkout") {
-          router.showScreen(.push) { _ in CheckoutView(selectedTab: $selectedTab, price: vm.totalPrice) }
+          router.showScreen(.push) { _ in CheckoutView(vm: vm) }
         }
       }
       .padding(.horizontal, 24)
@@ -52,7 +49,11 @@ struct CartView: View {
 }
 
 #Preview {
-  CartView(selectedTab: .constant(.home))
+  let mainVM = MainViewModel()
+  mainVM.cartVM.items = [
+    Cart(goods: Goods(name: "Dracaena reflexa", category: .outdoor, image: "outdoor-1", price: 150.0), quantity: 1)
+  ]
+  
+  return CartView(vm: mainVM)
     .previewRouter()
-    .environmentObject(CartViewModel())
 }

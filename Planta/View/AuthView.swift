@@ -1,40 +1,36 @@
 import SwiftUI
-import SwiftfulRouting
 
 struct AuthView: View {
-  @StateObject private var vm = AuthViewModel()
-  @ObservedObject var appState: AppState
+  @ObservedObject var vm: MainViewModel
   @FocusState var isFocused: Bool
   @Environment(\.router) var router
   
   var body: some View {
-    RouterView { _ in
-      VStack(alignment: .leading, spacing: 0) {
-        if !isFocused {
-          BgImage
-            .transition(.move(edge: .top).combined(with: .opacity))
+    VStack(alignment: .leading, spacing: 0) {
+      if !isFocused {
+        BgImage
+          .transition(.move(edge: .top).combined(with: .opacity))
+      }
+      
+      VStack(spacing: 0) {
+        Logo
+        Title
+        EmailButton
+        
+        if let error = vm.authVM.errorMessage {
+          Text(error)
+            .foregroundColor(.red)
+            .body(type: .regular)
+            .padding(.horizontal, 48)
         }
         
-        VStack(spacing: 0) {
-          Logo
-          Title
-          EmailButton
-          
-          if let error = vm.errorMessage {
-            Text(error)
-              .foregroundColor(.red)
-              .body(type: .regular)
-              .padding(.horizontal, 48)
-          }
-          
-          PressButton
-          SkipButton
-          Spacer()
-        }
-        .background(.white)
+        PressButton
+        SkipButton
+        Spacer()
       }
-      .animation(.easeInOut, value: isFocused)
+      .background(.white)
     }
+    .animation(.easeInOut, value: isFocused)
   }
   
   private var BgImage: some View {
@@ -76,7 +72,7 @@ struct AuthView: View {
   
   private var EmailButton: some View {
     VStack {
-      CustomTextField(placeholder: "Email", color: .gray, text: $vm.email)
+      CustomTextField(placeholder: "Email", color: .gray, text: $vm.authVM.email)
         .keyboardType(.emailAddress)
         .focused($isFocused)
         .padding(.horizontal, 48)
@@ -87,9 +83,8 @@ struct AuthView: View {
   private var PressButton: some View {
     VStack {
       CustomButton(text: "Login / Register", color: isFocused ? .black : .appLightGray) {
-        if vm.validate() {
-          appState.updateUser(email: vm.email)
-        }
+        Task { await vm.authVM.saveFromData() }
+        vm.appState.updateUser(email: vm.authVM.email)
       }
       .disabled(!isFocused)
       .padding(.horizontal, 48)
@@ -100,7 +95,7 @@ struct AuthView: View {
   private var SkipButton: some View {
     VStack {
       Button(action: {
-        appState.updateUser(email: "exapmle@mail.com")
+        vm.appState.updateUser(email: "exapmle@mail.com")
       }) {
         Text("Not now")
           .sub(type: .regular)
@@ -112,7 +107,7 @@ struct AuthView: View {
 }
 
 #Preview {
-  AuthView(appState: AppState())
+  AuthView(vm: MainViewModel())
     .previewRouter()
     .environmentObject(CartViewModel())
   

@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct GoodsSectionView<Destination: View>: View {
+  @ObservedObject var vm: MainViewModel
   @Environment(\.router) var router
-  @Binding var selectedTab: Tab
   
   let title: String
   let items: [Goods]
@@ -24,7 +24,7 @@ struct GoodsSectionView<Destination: View>: View {
         ForEach(limitedItems) { item in
           Button {
             router.showScreen(.push) { _ in
-              DetailsView(item: item, selectedTab: $selectedTab)
+              DetailsView(item: item, vm: vm)
             }
           } label: {
             CartGoodsView(item: item)

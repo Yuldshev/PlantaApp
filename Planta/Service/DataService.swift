@@ -1,8 +1,8 @@
 import Foundation
 
 protocol DataServiceProtocol {
-  func saveCache<T: Encodable>(_ data: T, key: CacheKey)
-  func loadCache<T: Decodable>(key: CacheKey, as type: T.Type) -> T?
+  func saveCache<T: Encodable>(_ data: T, key: CacheKey) async
+  func loadCache<T: Decodable>(key: CacheKey, as type: T.Type) async -> T?
   func removeCache(for key: CacheKey)
   func clearAllCache()
 }
@@ -53,12 +53,14 @@ enum CacheKey: String {
   case user
   case cart
   case recentSearch
+  case order
   
   var type: Any.Type {
     switch self {
       case .user: return User.self
-      case .cart: return [CartItem].self
+      case .cart: return [Cart].self
       case .recentSearch: return [String].self
+      case .order: return [Order].self
     }
   }
 }

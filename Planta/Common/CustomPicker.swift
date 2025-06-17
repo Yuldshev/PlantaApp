@@ -1,32 +1,32 @@
 import SwiftUI
 
 struct CustomPicker: View {
-  @EnvironmentObject var vm: CartViewModel
-  let item: Goods
+  @Binding var quantity: Int
   let isTextHidden: Bool
   
   var body: some View {
     VStack {
       if isTextHidden {
-        Text("You picked \(vm.items[item] ?? 0) item")
+        Text("You picked \(quantity) item")
           .body(type: .regular)
       }
       
       HStack(spacing: 24) {
-        Button { vm.add(item) } label: {
+        Button { quantity += 1 } label: {
           Image(.plusSquare)
             .foregroundStyle(.black)
         }
         
-        Text("\(vm.items[item] ?? 0)")
+        Text("\(quantity)")
           .sub(type: .regular)
         
         Button {
-          vm.remove(item)
+          Task { quantity -= 1 }
         } label: {
           Image(.minusSquare)
             .foregroundStyle(.black)
         }
+        .disabled(quantity <= 0)
       }
     }
   }

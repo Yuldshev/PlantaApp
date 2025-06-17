@@ -2,10 +2,10 @@ import SwiftUI
 
 struct DetailsView: View {
   let item: Goods
-  @Binding var selectedTab: Tab
-  @EnvironmentObject var vm: CartViewModel
-  @Environment(\.router) var router
+  @ObservedObject var vm: MainViewModel
   
+  @State private var quantity = 0
+  @Environment(\.router) var router
   
   let information = [
     ("Mass", "1kg"),
@@ -97,7 +97,7 @@ struct DetailsView: View {
   private var Order: some View {
     VStack {
       HStack {
-        CustomPicker(item: item, isTextHidden: true)
+        CustomPicker(quantity: $quantity, isTextHidden: true)
           .environmentObject(vm)
         
         Spacer()
@@ -105,26 +105,27 @@ struct DetailsView: View {
         VStack {
           Text("Subtotal")
             .body(type: .regular)
-          Text(vm.totalPrice.asCurrency)
+          Text((item.price * Double(quantity)).asCurrency)
             .h1()
         }
       }
       
-      CustomButton(text: "Order Now", color: vm.items[item] ?? 0 >= 1 ? .accent : .appLightGray) {
-        if vm.items[item] ?? 0 >= 1 {
-          router.dismissScreen()
-          selectedTab = .order
-        }
+      CustomButton(text: "Order Now", color: quantity > 0 ? .accent : .appLightGray) {
+        Task { await vm.cartVM.saveCart(item: item, quantity: quantity) }
+        router.dismissPushStack()
+        vm.tab = .order
       }
-      .disabled(vm.items[item] ?? 0 < 1)
-        
+      .disabled(quantity < 1)
+      
     }
     .padding(.horizontal, 24)
   }
 }
 
 #Preview {
-  DetailsView(item: Goods(name: "Dracaena reflexa", category: .indoor, image: "outdoor-1", price: 150), selectedTab: .constant(.order))
+  let goods = Goods(name: "Dracaena reflexa", category: .indoor, image: "outdoor-1", price: 150)
+  
+  return DetailsView(item: goods, vm: MainViewModel())
     .previewRouter()
-    .environmentObject(CartViewModel())
 }
+

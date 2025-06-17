@@ -13,11 +13,6 @@ enum GoodsCategory: String, CaseIterable, Codable {
   case outdoor, indoor, equipment
 }
 
-struct CartItem: Codable {
-  let goods: Goods
-  let count: Int
-}
-
 let outdoorList: [Goods] = [
   Goods(name: "Dracaena reflexa", category: .outdoor, image: "outdoor-1", price: 150),
   Goods(name: "Rubber plant", category: .outdoor, image: "outdoor-2", price: 120),

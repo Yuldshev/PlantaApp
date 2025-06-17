@@ -1,19 +1,19 @@
 import SwiftUI
 
 struct HomeView: View {
-  @EnvironmentObject var vm: CartViewModel
+  @ObservedObject var vm: MainViewModel
   @Environment(\.router) var router
-  @Binding var selectedTab: Tab
+
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack(spacing: 0) {
         Hero
         VStack {
-          GoodsSectionView(selectedTab: $selectedTab ,title: "Plants", items: indoorList, limit: nil, destination: {
-            ListPlantsView(selectedTab: $selectedTab).environmentObject(vm)}
-          )
-          GoodsSectionView(selectedTab: $selectedTab, title: "Equipments", items: equipmentList, limit: 6, destination: { ListEquipmentView(selectedTab: $selectedTab).environmentObject(vm)})
+          GoodsSectionView(vm: vm, title: "Plants", items: indoorList, limit: nil) {
+            ListPlantsView(vm: vm) }
+          
+          GoodsSectionView(vm: vm, title: "Equipments", items: equipmentList, limit: 6) { ListEquipmentView(vm: vm) }
           BannerBalm
         }
         .padding(.horizontal, 24)
@@ -29,12 +29,9 @@ struct HomeView: View {
         .frame(height: 62)
       
       Button {
-        router.showScreen(.push) { _ in
-          ListPlantsView(selectedTab: $selectedTab)
-            .environmentObject(vm)
-        }
+        router.showScreen(.push) { _ in ListPlantsView(vm: vm) }
       } label: {
-        HomeHiroView(selectedTab: $selectedTab)
+        HomeHiroView(vm: vm)
       }
     }
     .scrollTransition { content, phase in
@@ -51,8 +48,7 @@ struct HomeView: View {
       
       Button {
         router.showScreen(.push) { _ in
-          ListEquipmentView(selectedTab: $selectedTab)
-            .environmentObject(vm)
+          ListEquipmentView(vm: vm)
         }
       } label: {
         HStack {
@@ -77,13 +73,11 @@ struct HomeView: View {
       }
     }
     .padding(.vertical, 24)
+    .padding(.bottom, 60)
   }
 }
 
-
-
 #Preview {
-  HomeView(selectedTab: .constant(.home))
+  HomeView(vm: MainViewModel())
     .previewRouter()
-    .environmentObject(CartViewModel())
 }

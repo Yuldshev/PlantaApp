@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct HomeHiroView: View {
-  @Binding var selectedTab: Tab
+  @ObservedObject var vm: MainViewModel
+  @Environment(\.router) var router
   
   var body: some View {
     VStack(alignment: .leading, spacing: 7) {
@@ -28,7 +29,8 @@ struct HomeHiroView: View {
     .background(.appLight)
     .overlay(alignment: .topTrailing) {
       Button {
-        selectedTab = .order
+        router.dismissPushStack()
+        vm.tab = .order
       } label: {
         Image(.cart)
           .foregroundStyle(.black)
@@ -47,5 +49,5 @@ struct HomeHiroView: View {
 }
 
 #Preview {
-  HomeHiroView(selectedTab: .constant(.order))
+  HomeHiroView(vm: MainViewModel())
 }

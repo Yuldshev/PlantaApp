@@ -1,42 +1,37 @@
 import SwiftUI
 
 struct MainView: View {
-  @ObservedObject var appState: AppState
-  @StateObject var vm = CartViewModel()
-  @State private var selectedTab: Tab = .home
+  @ObservedObject var vm: MainViewModel
   
   var body: some View {
     ZStack {
       VStack {
-        switch selectedTab {
+        switch vm.tab {
           case .home:
-            HomeView(selectedTab: $selectedTab)
+            HomeView(vm: vm)
               .transition(.move(edge: .bottom).combined(with: .opacity))
-              .environmentObject(vm)
           case .search:
             SearchView()
               .transition(.move(edge: .bottom).combined(with: .opacity))
           case .order:
-            CartView(selectedTab: $selectedTab)
+            CartView(vm: vm)
               .transition(.move(edge: .bottom).combined(with: .opacity))
-              .environmentObject(vm)
           case .profile:
-            ProfileView(appState: appState)
+            ProfileView(vm: vm)
               .transition(.move(edge: .bottom).combined(with: .opacity))
         }
       }
-      .animation(.easeInOut, value: selectedTab)
+      .animation(.easeInOut, value: vm.tab)
       
       VStack {
         Spacer()
-        CustomTabView(selectedTab: $selectedTab)
+        CustomTabView(selectedTab: $vm.tab)
       }
     }
   }
 }
 
 #Preview {
-  MainView(appState: AppState())
+  MainView(vm: MainViewModel())
     .previewRouter()
-    .environmentObject(CartViewModel())
 }

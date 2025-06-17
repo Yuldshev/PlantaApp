@@ -1,60 +1,63 @@
 import Foundation
 
+@MainActor
 final class CartViewModel: ObservableObject {
-  @Published private(set) var items: [Goods: Int] = [:]
+  @Published var items: [Cart] = []
   
-  private var dataService: DataServiceProtocol
+  private var service: DataServiceProtocol
   
   init(service: DataServiceProtocol = DataService()) {
-    self.dataService = service
-    loadCart()
+    self.service = service
   }
   
-  func add(_ item: Goods) {
-    items[item, default: 0] += 1
-    saveCart()
-  }
-  
-  func remove(_ item: Goods) {
-    guard let currentCount = items[item], currentCount > 1 else {
-      items[item] = nil
-      saveCart()
-      return
+  func add(_ item: Goods) async {
+    if let index = items.firstIndex(where: { $0.goods == item }) {
+      items[index].quantity += 1
+    } else {
+      items.append(Cart(goods: item, quantity: 1))
     }
+  }
+  
+  func remove(_ item: Goods) async {
+    guard let index = items.firstIndex(where: { $0.goods == item }) else { return }
     
-    items[item] = currentCount - 1
-    saveCart()
+    if items[index].quantity > 1 {
+      items[index].quantity -= 1
+    } else {
+      items.remove(at: index)
+    }
   }
   
   func clear() {
     items.removeAll()
-    dataService.removeCache(for: .cart)
+    service.removeCache(for: .cart)
+  }
+  
+  //MARK: - Cache Service
+  func saveCart(item: Goods, quantity: Int) async {
+    let cartItem = Cart(goods: item, quantity: quantity)
+    
+    if let index = items.firstIndex(where: { $0.goods == item }) {
+      items[index].quantity = quantity
+    } else {
+      items.append(cartItem)
+    }
+    
+    await service.saveCache(items, key: .cart)
+  }
+  
+  func loadCart() async {
+    if let saveItems = await service.loadCache(key: .cart, as: [Cart].self) {
+      items = saveItems
+      print("Load cache: \(items)")
+    }
   }
   
   var totalCount: Int {
-    items.values.reduce(0, +)
+    items.reduce(0) { $0 + $1.quantity }
   }
   
   var totalPrice: Double {
-    items.reduce(0) { $0 + Double($1.value) * $1.key.price }
-  }
-  
-  var orderedItems: [(items: Goods, count: Int)] {
-    items.map { ($0.key, $0.value) }
-  }
-  
-  private func saveCart() {
-    let saveItems = items.map { CartItem(goods: $0.key, count: $0.value) }
-    print("Saving items: \(saveItems.map { $0.goods.name })")
-    dataService.saveCache(saveItems, key: .cart)
-  }
-  
-  func loadCart() {
-    if let savedItems = dataService.loadCache(key: .cart, as: [CartItem].self) {
-      print("Loaded items: \(savedItems.map { $0.goods.name })")
-      var result: [Goods: Int] = [:]
-      savedItems.forEach { result[$0.goods] = $0.count }
-      items = result
-    }
+    items.reduce(0) { $0 + (Double($1.quantity) * $1.goods.price) }
   }
 }

@@ -1,13 +1,14 @@
 import Foundation
 import Combine
 
+@MainActor
 final class SearchViewModel: ObservableObject {
   private var service: DataServiceProtocol
   
   @Published var query: String = ""
   @Published private(set) var filterGoods: [Goods] = []
   @Published private(set) var recentSearches: [String] = [] {
-    didSet { saveRecentSearches() }
+    didSet { Task { await saveRecentSearches() } }
   }
   
   private var allGoods: [Goods]
@@ -17,8 +18,9 @@ final class SearchViewModel: ObservableObject {
   init(allGoods: [Goods], service: DataServiceProtocol = DataService()) {
     self.allGoods = allGoods
     self.service = service
-    loadRecentSearches()
     setupSearch()
+    
+    Task { await loadRecentSearches() }
   }
   
   private func setupSearch() {
@@ -61,12 +63,12 @@ final class SearchViewModel: ObservableObject {
     recentSearches.removeAll()
   }
   
-  private func saveRecentSearches() {
-    service.saveCache(recentSearches, key: .recentSearch)
+  private func saveRecentSearches() async {
+    await service.saveCache(recentSearches, key: .recentSearch)
   }
   
-  private func loadRecentSearches() {
-    if let cached: [String] = service.loadCache(key: .recentSearch, as: [String].self) {
+  private func loadRecentSearches() async {
+    if let cached: [String] = await service.loadCache(key: .recentSearch, as: [String].self) {
       recentSearches = cached
     } else {
       recentSearches = []

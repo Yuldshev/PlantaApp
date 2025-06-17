@@ -1,12 +1,14 @@
 import SwiftUI
 
 struct CartListView: View {
-  @EnvironmentObject var vm: CartViewModel
-  var item: Goods
+  @ObservedObject var vm: CartViewModel
+  
+  @State private var quantity = 0
+  var item: Cart
   
   var body: some View {
     HStack(spacing: 15) {
-      Image(item.image)
+      Image(item.goods.image)
         .resizable()
         .scaledToFit()
         .frame(width: 77, height: 77)
@@ -15,23 +17,23 @@ struct CartListView: View {
       
       VStack(alignment: .leading) {
         HStack {
-          Text("\(item.name) |")
+          Text("\(item.goods.name) |")
             .sub(type: .bold)
-          Text(item.category.rawValue.capitalized)
+          Text(item.goods.category.rawValue.capitalized)
             .body(type: .regular)
             .foregroundStyle(.appLightGray)
         }
         
-        Text(item.price.asCurrency)
+        Text(item.goods.price.asCurrency)
           .sub(type: .bold)
           .foregroundStyle(.accent)
         
         HStack(alignment: .bottom, spacing: 24) {
-          CustomPicker(item: item, isTextHidden: false)
+          CustomPicker(quantity: $quantity, isTextHidden: false)
             .environmentObject(vm)
             .frame(width: 120)
           
-          Button { vm.remove(item) } label: {
+          Button { Task { await vm.remove(item.goods) } } label: {
             Text("Remove")
               .sub(type: .regular)
               .foregroundStyle(.black)

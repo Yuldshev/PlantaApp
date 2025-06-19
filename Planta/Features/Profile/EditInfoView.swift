@@ -33,6 +33,7 @@ struct EditInfoView: View {
       .padding(.vertical, 15)
       .padding(.horizontal, 48)
       .inlineNavigation(title: "Edit Information", isShow: false)
+      .swipeBackGesture()
     }
     .overlay(alignment: .bottom) {
       CustomButton(text: "Save", color: authVM.isValid ? .accent : .appLightGray) {

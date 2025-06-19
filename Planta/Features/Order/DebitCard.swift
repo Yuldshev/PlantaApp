@@ -18,6 +18,7 @@ struct DebitCard: View {
       .padding(.horizontal, 48)
     }
     .inlineNavigation(title: "Checkout", isShow: false)
+    .swipeBackGesture()
     .overlay(alignment: .bottom) {
       VStack(alignment: .leading, spacing: 8) {
         CheckoutPriceRow(title: "Subtotal", value: cartVM.totalPrice.formattedNumber)
@@ -26,7 +27,7 @@ struct DebitCard: View {
         .padding(.bottom, 8)
         
         CustomButton(text: "Continue", color: orderVM.isValid ? .accent : .appLightGray) {
-          router.showScreen(.push) { _ in SuccessOrderView(cartVM: cartVM, orderVM: orderVM) }
+          router.showScreen(.fullScreenCover) { _ in SuccessOrderView(cartVM: cartVM, orderVM: orderVM) }
         }
         .disabled(!orderVM.isValid)
       }

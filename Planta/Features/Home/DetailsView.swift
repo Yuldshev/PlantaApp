@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DetailsView: View {
   let item: Goods
+  @State private var quantity = 0
   @ObservedObject var cartVM: CartViewModel
   @ObservedObject var mainVM: MainViewModel
   @Environment(\.router) var router
@@ -27,6 +28,7 @@ struct DetailsView: View {
         .padding(.top, 110)
     }
     .inlineNavigation(title: item.name, isShow: true)
+    .swipeBackGesture()
   }
   
   private var ImageItem: some View {
@@ -100,25 +102,26 @@ struct DetailsView: View {
   private var Order: some View {
     VStack {
       HStack {
-        CustomPicker(cartVM: cartVM, item: item, isTextHidden: true)
+        CustomPicker(item: item, quantity: $quantity, isTextHidden: false)
         
         Spacer()
         
         VStack {
           Text("Subtotal")
             .body(type: .regular)
-          Text((item.price * Double(cartVM.totalCount)).formattedNumber)
+          Text((item.price * Double(quantity)).formattedNumber)
             .h1()
         }
       }
       
-      CustomButton(text: "Order Now", color: cartVM.totalCount > 0 ? .accent : .appLightGray) {
+      CustomButton(text: "Order Now", color: quantity > 0 ? .accent : .appLightGray) {
         Task {
+          cartVM.updateQuantity(for: item, to: quantity)
           router.dismissPushStack()
           mainVM.tab = .order
         }
       }
-      .disabled(cartVM.totalCount < 1)
+      .disabled(quantity < 1)
       
     }
     .padding(.horizontal, 24)

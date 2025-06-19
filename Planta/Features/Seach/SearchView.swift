@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct SearchView: View {
+  @ObservedObject var cartVM: CartViewModel
+  @ObservedObject var mainVM: MainViewModel
+  @Environment(\.router) var router
+  
   @StateObject private var vm = SearchViewModel(allGoods: outdoorList + indoorList + equipmentList)
   let columns = [
     GridItem(.flexible(), spacing: 30),
@@ -56,7 +60,11 @@ struct SearchView: View {
       } else {
         LazyVGrid(columns: columns, spacing: 20) {
           ForEach(vm.filterGoods) { item in
-            CartGoodsView(item: item)
+            Button {
+              router.showScreen(.push) { _ in DetailsView(item: item, cartVM: cartVM, mainVM: mainVM) }
+            } label: {
+              CartGoodsView(item: item)
+            }
           }
         }
       }
@@ -67,6 +75,6 @@ struct SearchView: View {
 }
 
 #Preview {
-  SearchView()
+  SearchView(cartVM: CartViewModel(), mainVM: MainViewModel())
     .previewRouter()
 }

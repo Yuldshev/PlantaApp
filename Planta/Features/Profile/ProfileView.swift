@@ -1,10 +1,13 @@
 import SwiftUI
+import SwiftfulRouting
 
 struct ProfileView: View {
   @ObservedObject var appState: AppState
   @ObservedObject var authVM: AuthViewModel
   @ObservedObject var orderVM: OrderViewModel
   @Environment(\.router) var router
+  
+  let config = ResizableSheetConfig(detents: [.medium, .large], dragIndicator: .visible)
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
@@ -32,10 +35,10 @@ struct ProfileView: View {
   
   private var securityItem: [ProfileMenuItem] {[
     ProfileMenuItem(title: "Terms & Policy") {
-      router.showScreen(.push) { _ in TermsPolicyView() }
+      router.showScreen(.sheetConfig(config: config)) { _ in TermsPolicyView() }
     },
     ProfileMenuItem(title: "Security Policy ") {
-      router.showScreen(.push) { _ in SecurePolicyView() }
+      router.showScreen(.sheetConfig(config: config)) { _ in SecurePolicyView() }
     },
     ProfileMenuItem(title: "Logout") {
       appState.logout()

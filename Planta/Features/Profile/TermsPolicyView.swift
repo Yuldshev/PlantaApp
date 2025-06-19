@@ -35,6 +35,7 @@ struct TermsPolicyView: View {
       }
       .padding(.horizontal, 48)
       .inlineNavigation(title: "Terms & Policy", isShow: false)
+      .swipeBackGesture()
     }
   }
 }

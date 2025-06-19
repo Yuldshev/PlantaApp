@@ -17,6 +17,7 @@ struct TransactionHistory: View {
       .padding(.horizontal, 48)
       .task { await orderVM.loadOrders() }
       .inlineNavigation(title: "Transaction history", isShow: false)
+      .swipeBackGesture()
     }
   }
   

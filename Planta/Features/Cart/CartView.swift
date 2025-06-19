@@ -50,7 +50,9 @@ struct CartView: View {
         }
       }
       .padding(.horizontal, 24)
+      .padding(.top)
       .padding(.bottom, 80)
+      .background(.white)
     }
   }
   

@@ -20,6 +20,20 @@ final class CartViewModel: ObservableObject {
     Task { await saveCart() }
   }
   
+  func updateQuantity(for item: Goods, to newQuantity: Int) {
+    if let index = items.firstIndex(where: { $0.goods == item }) {
+      if newQuantity <= 0 {
+        items.remove(at: index)
+      } else {
+        items[index].quantity = newQuantity
+      }
+    } else if newQuantity > 0 {
+      items.append(Cart(goods: item, quantity: newQuantity))
+    }
+    
+    Task { await saveCart() }
+  }
+  
   func remove(_ item: Goods) {
     guard let index = items.firstIndex(where: { $0.goods == item }) else { return }
     

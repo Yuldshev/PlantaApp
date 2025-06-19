@@ -32,6 +32,7 @@ struct SecurePolicyView: View {
       }
       .padding(.horizontal, 48)
       .inlineNavigation(title: "Security Policy", isShow: false)
+      .swipeBackGesture()
     }
   }
 }

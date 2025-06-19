@@ -14,7 +14,7 @@ struct MainView: View {
         Group {
           switch mainVM.tab {
             case .home: HomeView(cartVM: cartVM, orderVM: orderVM, mainVM: mainVM)
-            case .search: SearchView()
+            case .search: SearchView(cartVM: cartVM, mainVM: mainVM)
             case .order: CartView(cartVM: cartVM, orderVM: orderVM, authVM: authVM)
             case .profile: ProfileView(appState: appState, authVM: authVM, orderVM: orderVM)
           }

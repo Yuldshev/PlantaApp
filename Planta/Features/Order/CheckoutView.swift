@@ -18,6 +18,7 @@ struct CheckoutView: View {
       .padding(.horizontal, 48)
     }
     .inlineNavigation(title: "Checkout", isShow: false)
+    .swipeBackGesture()
     .overlay(alignment: .bottom) {
       VStack(alignment: .leading, spacing: 8) {
         CheckoutPriceRow(title: "Subtotal", value: cartVM.totalPrice.formattedNumber)
@@ -25,13 +26,14 @@ struct CheckoutView: View {
         CheckoutPriceRow(title: "Total", value: (cartVM.totalPrice + (orderVM.deliveryMethod == .fast ? 30 : 18)).formattedNumber)
         .padding(.bottom, 8)
         
-        CustomButton(text: "Continue") {
+        CustomButton(text: "Continue", color: authVM.isValid ? .accent : .appLightGray) {
           if orderVM.paymentMethod == .creditCard {
             router.showScreen(.push) { _ in DebitCard(authVM: authVM, cartVM: cartVM, orderVM: orderVM) }
           } else {
-            router.showScreen(.push) { _ in SuccessOrderView(cartVM: cartVM, orderVM: orderVM) }
+            router.showScreen(.fullScreenCover) { _ in SuccessOrderView(cartVM: cartVM, orderVM: orderVM) }
           }
         }
+        .disabled(!authVM.isValid)
       }
       .padding(.top)
       .body(type: .regular)

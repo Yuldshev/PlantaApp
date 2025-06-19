@@ -13,7 +13,7 @@ struct CartListView: View {
         .background(.appLight)
         .clipShape(RoundedRectangle(cornerRadius: 8))
       
-      VStack(alignment: .leading) {
+      VStack(alignment: .leading, spacing: 4) {
         HStack {
           Text("\(item.goods.name) |")
             .sub(type: .bold)
@@ -26,9 +26,12 @@ struct CartListView: View {
           .sub(type: .bold)
           .foregroundStyle(.accent)
         
-        HStack(alignment: .bottom, spacing: 24) {
-          CustomPicker(cartVM: cartVM, item: item.goods, isTextHidden: false)
-            .frame(width: 120)
+        HStack {
+          Text("Quantiy: \(item.quantity)")
+            .body(type: .regular)
+            .foregroundStyle(.appLightGray)
+          
+          Spacer()
           
           Button {  cartVM.remove(item.goods) } label: {
             Text("Remove")

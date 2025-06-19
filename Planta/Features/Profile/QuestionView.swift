@@ -19,6 +19,7 @@ struct QuestionView: View {
       .padding(.horizontal, 48)
     }
     .inlineNavigation(title: "FAQS", isShow: false)
+    .swipeBackGesture()
   }
 }
 

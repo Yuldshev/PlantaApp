@@ -16,6 +16,8 @@ final class CartViewModel: ObservableObject {
     } else {
       items.append(Cart(goods: item, quantity: 1))
     }
+    
+    Task { await saveCart() }
   }
   
   func remove(_ item: Goods) {
@@ -26,6 +28,8 @@ final class CartViewModel: ObservableObject {
     } else {
       items.remove(at: index)
     }
+    
+    Task { await saveCart() }
   }
   
   func clear() {
@@ -34,22 +38,13 @@ final class CartViewModel: ObservableObject {
   }
   
   // MARK: - Data persistence
-  func saveCart(item: Goods, quantity: Int) async {
-    let cartItem = Cart(goods: item, quantity: quantity)
-    
-    if let index = items.firstIndex(where: { $0.goods == item }) {
-      items[index].quantity = quantity
-    } else {
-      items.append(cartItem)
-    }
-    
+  func saveCart() async {
     await service.saveCache(items, key: .cart)
   }
   
   func loadCart() async {
     if let saveItems = await service.loadCache(key: .cart, as: [Cart].self) {
       items = saveItems
-      print("Load cache: \(items)")
     }
   }
   

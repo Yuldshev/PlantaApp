@@ -4,7 +4,6 @@ enum AppRoute {
   case auth, home
 }
 
-@MainActor
 final class AppState: ObservableObject {
   @Published var currentRoute: AppRoute
   @Published var user: User?
@@ -37,3 +36,4 @@ final class AppState: ObservableObject {
     UserDefaults.standard.removeObject(forKey: "currentUser")
   }
 }
+

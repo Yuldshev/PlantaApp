@@ -1,7 +1,9 @@
 import SwiftUI
 
 struct CheckoutView: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var authVM: AuthViewModel
+  @ObservedObject var cartVM: CartViewModel
+  @ObservedObject var orderVM: OrderViewModel
   @Environment(\.router) var router
   
   @State private var isValidate = false
@@ -18,17 +20,16 @@ struct CheckoutView: View {
     .inlineNavigation(title: "Checkout", isShow: false)
     .overlay(alignment: .bottom) {
       VStack(alignment: .leading, spacing: 8) {
-        CheckoutPriceRow(title: "Subtotal", value: vm.cartVM.totalPrice.formattedNumber)
-        CheckoutPriceRow(title: "Delivery Fee", value: (vm.orderVM.deliveryMethod == .fast ? 30 : 18).formattedNumber)
-        CheckoutPriceRow(title: "Total", value: (vm.cartVM.totalPrice + (vm.orderVM.deliveryMethod == .fast ? 30 : 18)).formattedNumber)
+        CheckoutPriceRow(title: "Subtotal", value: cartVM.totalPrice.formattedNumber)
+        CheckoutPriceRow(title: "Delivery Fee", value: (orderVM.deliveryMethod == .fast ? 30 : 18).formattedNumber)
+        CheckoutPriceRow(title: "Total", value: (cartVM.totalPrice + (orderVM.deliveryMethod == .fast ? 30 : 18)).formattedNumber)
         .padding(.bottom, 8)
         
         CustomButton(text: "Continue") {
-          if vm.orderVM.paymentMethod == .creditCard {
-            router.showScreen(.push) { _ in DebitCard(vm: vm) }
+          if orderVM.paymentMethod == .creditCard {
+            router.showScreen(.push) { _ in DebitCard(authVM: authVM, cartVM: cartVM, orderVM: orderVM) }
           } else {
-            Task { await vm.orderVM.saveData(user: User(email: "", name: "", address: "", phone: ""), goods: vm.cartVM.items) }
-            router.showScreen(.push) { _ in SuccessOrderView(vm: vm) }
+            router.showScreen(.push) { _ in SuccessOrderView(cartVM: cartVM, orderVM: orderVM) }
           }
         }
       }
@@ -48,10 +49,16 @@ struct CheckoutView: View {
       }
       
       VStack(alignment: .leading, spacing: 15) {
-        CustomTextField(placeholder: "Name", text: $vm.authVM.name)
-        CustomTextField(placeholder: "Email", text: $vm.authVM.email)
-        CustomTextField(placeholder: "Address", text: $vm.authVM.address)
-        CustomTextField(placeholder: "Phone", text: $vm.authVM.phone)
+        CustomTextField(placeholder: "Name", text: $authVM.name)
+        CustomTextField(placeholder: "Email", text: $authVM.email)
+        CustomTextField(placeholder: "Address", text: $authVM.address)
+        CustomTextField(placeholder: "Phone", text: $authVM.phone)
+          .onChange(of: authVM.phone) { oldValue, newValue in
+            let formatted = newValue.formattedPhoneNumber()
+            if formatted != newValue {
+              authVM.phone = formatted
+            }
+          }
       }
       .body(type: .regular)
       .padding(.top, 15)
@@ -71,17 +78,17 @@ struct CheckoutView: View {
         DeliveryMethodPicker(
           title: "Quick Shipping - $30",
           subTitle: "Expected Shipping Date: \(DeliveryMethod.fast.formattedDate)",
-          isCheck: vm.orderVM.deliveryMethod == .fast
+          isCheck: orderVM.deliveryMethod == .fast
         ) {
-          vm.orderVM.deliveryMethod = .fast
+          orderVM.deliveryMethod = .fast
         }
         
         DeliveryMethodPicker(
           title: "COD - $18",
           subTitle: "Expected Shipping Date: \(DeliveryMethod.standard.formattedDate)",
-          isCheck: vm.orderVM.deliveryMethod == .standard
+          isCheck: orderVM.deliveryMethod == .standard
         ) {
-          vm.orderVM.deliveryMethod = .standard
+          orderVM.deliveryMethod = .standard
         }
       }
       .padding(.top, 15)
@@ -98,14 +105,14 @@ struct CheckoutView: View {
       
       VStack(alignment: .leading) {
         ForEach(PaymentMethod.allCases, id: \.rawValue) { type in
-          Button { vm.orderVM.paymentMethod = type } label: {
+          Button { orderVM.paymentMethod = type } label: {
             HStack {
               Text(type.rawValue.capitalized)
                 .sub(type: .regular)
-                .foregroundStyle(vm.orderVM.paymentMethod == type ? .accent : .black)
+                .foregroundStyle(orderVM.paymentMethod == type ? .accent : .black)
               Spacer()
               
-              if vm.orderVM.paymentMethod == type {
+              if orderVM.paymentMethod == type {
                 Image(.check)
                   .foregroundStyle(.accent)
               }
@@ -134,6 +141,6 @@ struct CheckoutPriceRow: View {
 }
 
 #Preview {
-  CheckoutView(vm: MainViewModel())
+  CheckoutView(authVM: AuthViewModel(), cartVM: CartViewModel(), orderVM: OrderViewModel())
     .previewRouter()
 }

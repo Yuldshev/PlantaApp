@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct AuthView: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var appState: AppState
+  @ObservedObject var authVM: AuthViewModel
   @FocusState var isFocused: Bool
   @Environment(\.router) var router
   
@@ -17,11 +18,12 @@ struct AuthView: View {
         Title
         EmailButton
         
-        if let error = vm.authVM.errorMessage {
+        if let error = authVM.errorMessage {
           Text(error)
             .foregroundColor(.red)
             .body(type: .regular)
             .padding(.horizontal, 48)
+            .accessibilityIdentifier("ErrorText")
         }
         
         PressButton
@@ -43,8 +45,10 @@ struct AuthView: View {
             .scaledToFit()
             .frame(width: 400, height: 400, alignment: .leading)
             .offset(x: -5)
+            .transition(.move(edge: .top))
         }
     }
+    .animation(.easeInOut, value: isFocused)
     .frame(height: 391)
     .foregroundStyle(.appLight)
   }
@@ -72,7 +76,7 @@ struct AuthView: View {
   
   private var EmailButton: some View {
     VStack {
-      CustomTextField(placeholder: "Email", color: .gray, text: $vm.authVM.email)
+      CustomTextField(placeholder: "Email", color: .gray, text: $authVM.email)
         .keyboardType(.emailAddress)
         .focused($isFocused)
         .padding(.horizontal, 48)
@@ -82,11 +86,10 @@ struct AuthView: View {
   
   private var PressButton: some View {
     VStack {
-      CustomButton(text: "Login / Register", color: isFocused ? .black : .appLightGray) {
-        Task { await vm.authVM.saveFromData() }
-        vm.appState.updateUser(email: vm.authVM.email)
+      CustomButton(text: "Login / Register", color: authVM.isValid ? .black : .appLightGray) {
+        appState.updateUser(email: authVM.email)
       }
-      .disabled(!isFocused)
+      .disabled(!authVM.isValid)
       .padding(.horizontal, 48)
     }
     .padding(.vertical, 15)
@@ -95,7 +98,7 @@ struct AuthView: View {
   private var SkipButton: some View {
     VStack {
       Button(action: {
-        vm.appState.updateUser(email: "exapmle@mail.com")
+        appState.updateUser(email: "exapmle@mail.com")
       }) {
         Text("Not now")
           .sub(type: .regular)
@@ -107,7 +110,7 @@ struct AuthView: View {
 }
 
 #Preview {
-  AuthView(vm: MainViewModel())
+  AuthView(appState: AppState(), authVM: AuthViewModel())
     .previewRouter()
     .environmentObject(CartViewModel())
   

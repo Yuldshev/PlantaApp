@@ -18,7 +18,7 @@ actor DataService: DataServiceProtocol {
       let encoded = try JSONEncoder().encode(data)
       self.userDefaults.set(encoded, forKey: fullKey)
     } catch {
-      print("Error saving data: \(error)")
+      return
     }
   }
   
@@ -29,7 +29,6 @@ actor DataService: DataServiceProtocol {
     do {
       return try JSONDecoder().decode(T.self, from: data)
     } catch {
-      print("Error loading data: \(error)")
       return nil
     }
   }

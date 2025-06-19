@@ -10,8 +10,19 @@
 		136CE1F32DE60BEA0047A993 /* SwiftfulRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 136CE1F22DE60BEA0047A993 /* SwiftfulRouting */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		13B99E172E0168CA00B1E75F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 136CE1BE2DE49A700047A993 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 136CE1C52DE49A700047A993;
+			remoteInfo = Planta;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		136CE1C62DE49A700047A993 /* Planta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Planta.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B99E132E0168CA00B1E75F /* PlantaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlantaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -33,6 +44,11 @@
 			path = Planta;
 			sourceTree = "<group>";
 		};
+		13B99E142E0168CA00B1E75F /* PlantaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PlantaTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +60,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		13B99E102E0168CA00B1E75F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -51,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				136CE1C82DE49A700047A993 /* Planta */,
+				13B99E142E0168CA00B1E75F /* PlantaTests */,
 				136CE1C72DE49A700047A993 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				136CE1C62DE49A700047A993 /* Planta.app */,
+				13B99E132E0168CA00B1E75F /* PlantaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -89,6 +114,29 @@
 			productReference = 136CE1C62DE49A700047A993 /* Planta.app */;
 			productType = "com.apple.product-type.application";
 		};
+		13B99E122E0168CA00B1E75F /* PlantaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 13B99E192E0168CA00B1E75F /* Build configuration list for PBXNativeTarget "PlantaTests" */;
+			buildPhases = (
+				13B99E0F2E0168CA00B1E75F /* Sources */,
+				13B99E102E0168CA00B1E75F /* Frameworks */,
+				13B99E112E0168CA00B1E75F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				13B99E182E0168CA00B1E75F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				13B99E142E0168CA00B1E75F /* PlantaTests */,
+			);
+			name = PlantaTests;
+			packageProductDependencies = (
+			);
+			productName = PlantaTests;
+			productReference = 13B99E132E0168CA00B1E75F /* PlantaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -101,6 +149,10 @@
 				TargetAttributes = {
 					136CE1C52DE49A700047A993 = {
 						CreatedOnToolsVersion = 16.3;
+					};
+					13B99E122E0168CA00B1E75F = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 136CE1C52DE49A700047A993;
 					};
 				};
 			};
@@ -122,12 +174,20 @@
 			projectRoot = "";
 			targets = (
 				136CE1C52DE49A700047A993 /* Planta */,
+				13B99E122E0168CA00B1E75F /* PlantaTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		136CE1C42DE49A700047A993 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B99E112E0168CA00B1E75F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -144,7 +204,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		13B99E0F2E0168CA00B1E75F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		13B99E182E0168CA00B1E75F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 136CE1C52DE49A700047A993 /* Planta */;
+			targetProxy = 13B99E172E0168CA00B1E75F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		136CE1CF2DE49A720047A993 /* Debug */ = {
@@ -338,6 +413,42 @@
 			};
 			name = Release;
 		};
+		13B99E1A2E0168CA00B1E75F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9WVBG69A9A;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = yuldshev.PlantaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Planta.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Planta";
+			};
+			name = Debug;
+		};
+		13B99E1B2E0168CA00B1E75F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9WVBG69A9A;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = yuldshev.PlantaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Planta.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Planta";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -355,6 +466,15 @@
 			buildConfigurations = (
 				136CE1D22DE49A720047A993 /* Debug */,
 				136CE1D32DE49A720047A993 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		13B99E192E0168CA00B1E75F /* Build configuration list for PBXNativeTarget "PlantaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13B99E1A2E0168CA00B1E75F /* Debug */,
+				13B99E1B2E0168CA00B1E75F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

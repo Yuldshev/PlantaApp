@@ -3,23 +3,19 @@ import SwiftfulRouting
 
 @main
 struct PlantaApp: App {
-  @StateObject var vm = MainViewModel()
+  @StateObject var appState = AppState()
+  @StateObject var authVM = AuthViewModel()
   
   var body: some Scene {
     WindowGroup {
-      VStack {
-        if vm.appState.currentRoute == .auth {
-          RouterView { _ in
-            AuthView(vm: vm)
-              .preferredColorScheme(.light)
-          }
-        } else {
-          RouterView { _ in
-            MainView(vm: vm)
-              .preferredColorScheme(.light)
-          }
+      Group {
+        switch appState.currentRoute {
+          case .auth: RouterView { _ in AuthView(appState: appState, authVM: authVM).transition(.blurReplace) }
+          case .home: RouterView { _ in MainView(appState: appState, authVM: authVM).transition(.blurReplace) }
         }
       }
+      .animation(.easeInOut, value: appState.currentRoute)
     }
   }
 }
+

@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct ListPlantsView: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var cartVM: CartViewModel
+  @ObservedObject var mainVM: MainViewModel
   @State private var selectCategory: CategoryList = .all
   @Environment(\.router) var router
   
@@ -21,7 +22,7 @@ struct ListPlantsView: View {
         LazyVGrid(columns: columns, spacing: 20) {
           ForEach(filteredGoods) { cart in
             Button {
-              router.showScreen(.push) { _ in DetailsView(item: cart, vm: vm) }
+              router.showScreen(.push) { _ in DetailsView(item: cart, cartVM: cartVM, mainVM: mainVM) }
             } label: {
               CartGoodsView(item: cart)
                 .transition(.opacity.combined(with: .scale))
@@ -57,6 +58,6 @@ enum CategoryList: String, CaseIterable, Identifiable {
 }
 
 #Preview {
-  ListPlantsView(vm: MainViewModel())
+  ListPlantsView(cartVM: CartViewModel(), mainVM: MainViewModel())
     .previewRouter()
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InlineNavigation: ViewModifier {
-  @Environment(\.dismiss) var dismiss
+  @Environment(\.router) var router
   let title: String
   let isShow: Bool
   
@@ -16,7 +16,7 @@ struct InlineNavigation: ViewModifier {
         }
         
         ToolbarItem(placement: .topBarLeading) {
-          Button(action: { dismiss() }) {
+          Button { router.dismissScreen() } label: {
             Image(.chevronLeft)
               .foregroundStyle(.black)
           }
@@ -36,7 +36,7 @@ struct InlineNavigation: ViewModifier {
 }
 
 struct OrderNavigation: ViewModifier {
-  @Environment(\.dismiss) var dismiss
+  @Environment(\.router) var router
   let action: AnyView
   
   func body(content: Content) -> some View {
@@ -45,7 +45,7 @@ struct OrderNavigation: ViewModifier {
       .navigationBarBackButtonHidden()
       .toolbar {
         ToolbarItem(placement: .topBarLeading) {
-          Button(action: { dismiss() }) {
+          Button { router.dismissScreen() } label: {
             Image(.chevronLeft)
               .foregroundStyle(.black)
           }

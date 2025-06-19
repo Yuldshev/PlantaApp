@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeHiroView: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var mainVM: MainViewModel
   @Environment(\.router) var router
   
   var body: some View {
@@ -30,7 +30,7 @@ struct HomeHiroView: View {
     .overlay(alignment: .topTrailing) {
       Button {
         router.dismissPushStack()
-        vm.tab = .order
+        mainVM.tab = .order
       } label: {
         Image(.cart)
           .foregroundStyle(.black)
@@ -49,5 +49,5 @@ struct HomeHiroView: View {
 }
 
 #Preview {
-  HomeHiroView(vm: MainViewModel())
+  HomeHiroView(mainVM: MainViewModel())
 }

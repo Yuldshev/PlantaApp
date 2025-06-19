@@ -1,14 +1,16 @@
 import SwiftUI
 
 struct DebitCard: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var authVM: AuthViewModel
+  @ObservedObject var cartVM: CartViewModel
+  @ObservedObject var orderVM: OrderViewModel
   @Environment(\.router) var router
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack {
         BankInfo
-        if vm.authVM.isValid {
+        if authVM.isValid {
           PersonalInfo
         }
         DeliveryMethodView
@@ -18,17 +20,15 @@ struct DebitCard: View {
     .inlineNavigation(title: "Checkout", isShow: false)
     .overlay(alignment: .bottom) {
       VStack(alignment: .leading, spacing: 8) {
-        CheckoutPriceRow(title: "Subtotal", value: vm.cartVM.totalPrice.formattedNumber)
-        CheckoutPriceRow(title: "Delivery Fee", value: (vm.orderVM.deliveryMethod == .fast ? 30 : 18).formattedNumber)
-        CheckoutPriceRow(title: "Total", value: (vm.cartVM.totalPrice + (vm.orderVM.deliveryMethod == .fast ? 30 : 18)).formattedNumber)
+        CheckoutPriceRow(title: "Subtotal", value: cartVM.totalPrice.formattedNumber)
+        CheckoutPriceRow(title: "Delivery Fee", value: (orderVM.deliveryMethod == .fast ? 30 : 18).formattedNumber)
+        CheckoutPriceRow(title: "Total", value: (cartVM.totalPrice + (orderVM.deliveryMethod == .fast ? 30 : 18)).formattedNumber)
         .padding(.bottom, 8)
         
-        CustomButton(text: "Continue", color: vm.orderVM.isValid ? .accent : .appLightGray) {
-          Task { await vm.orderVM.saveData(user: User(email: vm.authVM.email, name: vm.authVM.name, address: vm.authVM.address, phone: vm.authVM.phone), goods: vm.cartVM.items) }
-          vm.cartVM.clear()
-          router.showScreen(.push) { _ in SuccessOrderView(vm: vm) }
+        CustomButton(text: "Continue", color: orderVM.isValid ? .accent : .appLightGray) {
+          router.showScreen(.push) { _ in SuccessOrderView(cartVM: cartVM, orderVM: orderVM) }
         }
-        .disabled(!vm.orderVM.isValid)
+        .disabled(!orderVM.isValid)
       }
       .padding(.top)
       .body(type: .regular)
@@ -47,27 +47,26 @@ struct DebitCard: View {
       }
       
       VStack(alignment: .leading, spacing: 15) {
-        CustomTextField(placeholder: "Number Card", isBold: false, height: 0.6, text: $vm.orderVM.pin)
-          .onChange(of: vm.orderVM.pin) { _, newValue in
+        CustomTextField(placeholder: "Number Card", isBold: false, height: 0.6, text: $orderVM.pin)
+          .onChange(of: orderVM.pin) { _, newValue in
             let formatted = newValue.formattedPin()
             if formatted != newValue {
-              vm.orderVM.pin = formatted
+              orderVM.pin = formatted
             }
           }
-        CustomTextField(placeholder: "Card Name", isBold: false, height: 0.6, text: $vm.orderVM.cardName)
+        CustomTextField(placeholder: "Card Name", isBold: false, height: 0.6, text: $orderVM.cardName)
         Button {
-          router.showBasicModal { ExpirationDatePicker(vm: vm.orderVM) }
+          router.showBasicModal { ExpirationDatePicker(vm: orderVM) }
         } label: {
           Text("expiration date".capitalized)
             .body(type: .regular)
         }
-        CustomTextField(placeholder: "CVV", isBold: false, height: 0.6, text: $vm.orderVM.cvc)
+        CustomTextField(placeholder: "CVV", isBold: false, height: 0.6, text: $orderVM.cvc)
       }
       .body(type: .regular)
       .padding(.top, 15)
     }
     .padding(.vertical, 20)
-    .onAppear { Task { await vm.orderVM.loadDebitCard() } }
   }
   
   //MARK: - PersonalInfo
@@ -87,10 +86,10 @@ struct DebitCard: View {
       }
       
       VStack(alignment: .leading) {
-        PersonalInfoRow(title: "Name:", data: vm.authVM.name)
-        PersonalInfoRow(title: "Email:", data: vm.authVM.email)
-        PersonalInfoRow(title: "Address:", data: vm.authVM.address)
-        PersonalInfoRow(title: "Phone:", data: vm.authVM.phone)
+        PersonalInfoRow(title: "Name:", data: authVM.name)
+        PersonalInfoRow(title: "Email:", data: authVM.email)
+        PersonalInfoRow(title: "Address:", data: authVM.address)
+        PersonalInfoRow(title: "Phone:", data: authVM.phone)
       }
       .padding(.top, 15)
     }
@@ -114,21 +113,21 @@ struct DebitCard: View {
       }
       
       VStack(alignment: .leading, spacing: 15) {
-        if vm.orderVM.deliveryMethod == .fast {
+        if orderVM.deliveryMethod == .fast {
           DeliveryMethodPicker(
             title: "Quick Shipping - $30",
             subTitle: "Expected Shipping Date: \(DeliveryMethod.fast.formattedDate)",
-            isCheck: vm.orderVM.deliveryMethod == .standard
+            isCheck: orderVM.deliveryMethod == .standard
           ) {
-            vm.orderVM.deliveryMethod = .fast
+            orderVM.deliveryMethod = .fast
           }
         } else {
           DeliveryMethodPicker(
             title: "COD - $18",
             subTitle: "Expected Shipping Date: \(DeliveryMethod.standard.formattedDate)",
-            isCheck: vm.orderVM.deliveryMethod == .fast
+            isCheck: orderVM.deliveryMethod == .fast
           ) {
-            vm.orderVM.deliveryMethod = .standard
+            orderVM.deliveryMethod = .standard
           }
         }
       }
@@ -153,6 +152,6 @@ struct PersonalInfoRow: View {
 }
 
 #Preview {
-  DebitCard(vm: MainViewModel())
+  DebitCard(authVM: AuthViewModel(), cartVM: CartViewModel(), orderVM: OrderViewModel())
     .previewRouter()
 }

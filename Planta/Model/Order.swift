@@ -2,8 +2,6 @@ import Foundation
 
 struct Order: Codable {
   let goods: [Cart]
-  let user: User
-  let card: Card
   let deliveryMethod: DeliveryMethod
   let paymentMethod: PaymentMethod
   let date: Date

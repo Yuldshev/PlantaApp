@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct ListEquipmentView: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var cartVM: CartViewModel
+  @ObservedObject var mainVM: MainViewModel
   @Environment(\.router) var router
   
   private let columns = [
@@ -14,7 +15,7 @@ struct ListEquipmentView: View {
       LazyVGrid(columns: columns, spacing: 20) {
         ForEach(equipmentList) { item in
           Button {
-            router.showScreen(.push) { _ in DetailsView(item: item, vm: vm) }
+            router.showScreen(.push) { _ in DetailsView(item: item, cartVM: cartVM, mainVM: mainVM) }
           } label: {
             CartGoodsView(item: item)
           }
@@ -27,6 +28,6 @@ struct ListEquipmentView: View {
 }
 
 #Preview {
-  ListEquipmentView(vm: MainViewModel())
+  ListEquipmentView(cartVM: CartViewModel(), mainVM: MainViewModel())
     .previewRouter()
 }

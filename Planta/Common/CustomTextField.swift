@@ -15,6 +15,4 @@ struct CustomTextField: View {
       CustomDivider(color: color, height: height)
     }
   }
-  
-  
 }

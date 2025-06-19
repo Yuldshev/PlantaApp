@@ -2,7 +2,7 @@ import Foundation
 
 @MainActor
 final class AuthViewModel: ObservableObject {
-  @Published var email = "" { didSet { validateAllFields() } }
+  @Published var email = "" { didSet { validateEmail() } }
   @Published var name = "" { didSet { validateAllFields() } }
   @Published var address = "" { didSet { validateAllFields() } }
   @Published var phone = "" { didSet { validateAllFields() } }
@@ -15,21 +15,37 @@ final class AuthViewModel: ObservableObject {
   init(service: DataServiceProtocol = DataService(), validationService: ValidationServiceProtocol = ValidationService()) {
     self.dataService = service
     self.validationService = validationService
-    validateAllFields()
   }
   
   // MARK: - Computed validation
   private func validateAllFields() {
     let result = validationService.validateUser(email: email, name: name, address: address, phone: phone)
-    self.isValid = result.isValid
-    self.errorMessage = result.error
+    switch result {
+      case .success:
+        isValid = true
+        errorMessage = nil
+      case .failure(let error):
+        isValid = false
+        errorMessage = error.localizedDescription
+    }
+  }
+  
+  private func validateEmail() {
+    let result = validationService.isValidEmail(email)
+    switch result {
+      case .success:
+        isValid = true
+        errorMessage = nil
+      case .failure(let error):
+        isValid = false
+        errorMessage = error.localizedDescription
+    }
   }
   
   // MARK: - Data persistence
   func saveFromData() async {
     let user = User(email: email, name: name, address: address, phone: phone)
     await dataService.saveCache(user, key: .user)
-    print("✅ User saved: \(user)")
   }
   
   func loadFromData() async {

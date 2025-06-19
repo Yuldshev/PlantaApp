@@ -1,15 +1,21 @@
 import SwiftUI
 
 struct CartView: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var cartVM: CartViewModel
+  @ObservedObject var orderVM: OrderViewModel
+  @ObservedObject var authVM: AuthViewModel
   @State private var isClear = false
   @Environment(\.router) var router
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack(spacing: 20.0) {
-        ForEach(vm.cartVM.items, id: \.goods.id) { item in
-          CartListView(vm: vm.cartVM, item: item)
+        if !cartVM.items.isEmpty {
+          ForEach(cartVM.items, id: \.goods.id) { item in
+            CartListView(cartVM: cartVM, item: item)
+          }
+        } else {
+          emptyCartView
         }
       }
     }
@@ -19,41 +25,57 @@ struct CartView: View {
       Button {
         router.showBottomModal {
           ConfirmModal(title: "Delete all orders?", subtitle: "This cannot be undone", onConfirm: {
-            vm.cartVM.clear()
+            cartVM.clear()
+            router.dismissModal()
           }, onCancel: { router.dismissModal() })
         }
       } label: {
-        Image(vm.cartVM.items.isEmpty ? .trashOff: .trashOn)
+        Image(cartVM.items.isEmpty ? .trashOff: .trashOn)
           .foregroundStyle(.black)
       }
-      .disabled(vm.cartVM.items.isEmpty)
+      .disabled(cartVM.items.isEmpty)
     }
-    .task { await vm.cartVM.loadCart() }
+    .task { await cartVM.loadCart() }
     .overlay(alignment: .bottom) {
       VStack {
         HStack {
           Text("Subtotal")
           Spacer()
-          Text(vm.cartVM.totalPrice.formattedNumber)
+          Text(cartVM.totalPrice.formattedNumber)
         }
         .body(type: .regular)
         
         CustomButton(text: "Proceed to Checkout") {
-          router.showScreen(.push) { _ in CheckoutView(vm: vm) }
+          router.showScreen(.push) { _ in CheckoutView(authVM: authVM, cartVM: cartVM, orderVM: orderVM) }
         }
       }
       .padding(.horizontal, 24)
       .padding(.bottom, 80)
     }
   }
+  
+  private var emptyCartView: some View {
+    VStack(spacing: 20) {
+      Image(.emptyCart)
+        .resizable()
+        .scaledToFit()
+        .frame(width: 200, height: 200)
+      
+      VStack(spacing: 6) {
+        Text("Your cart is empty")
+          .sub(type: .bold)
+        Text("Looks like you haven’t added anything yet. Start exploring and find something you love.")
+          .body(type: .regular)
+          .multilineTextAlignment(.center)
+      }
+      .foregroundStyle(.appLightGray)
+    }
+    .padding(.horizontal, 48)
+    .padding(.top, 20)
+  }
 }
 
 #Preview {
-  let mainVM = MainViewModel()
-  mainVM.cartVM.items = [
-    Cart(goods: Goods(name: "Dracaena reflexa", category: .outdoor, image: "outdoor-1", price: 150.0), quantity: 1)
-  ]
-  
-  return CartView(vm: mainVM)
+  CartView(cartVM: CartViewModel(), orderVM: OrderViewModel(), authVM: AuthViewModel())
     .previewRouter()
 }

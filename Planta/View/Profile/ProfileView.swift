@@ -1,13 +1,15 @@
 import SwiftUI
 
 struct ProfileView: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var appState: AppState
+  @ObservedObject var authVM: AuthViewModel
+  @ObservedObject var orderVM: OrderViewModel
   @Environment(\.router) var router
   
   var body: some View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack(spacing: 24) {
-        ProfileUserInfoView(authVM: vm.authVM)
+        ProfileUserInfoView(authVM: authVM)
         ProfileSection(title: "General", items: generalItem)
         ProfileSection(title: "Security", items: securityItem)
       }
@@ -18,10 +20,10 @@ struct ProfileView: View {
   
   private var generalItem: [ProfileMenuItem] {[
       ProfileMenuItem(title: "Edit Information") {
-        router.showScreen(.push) { _ in EditInfoView(authVM: vm.authVM) }
+        router.showScreen(.push) { _ in EditInfoView(authVM: authVM) }
       },
       ProfileMenuItem(title: "Transaction History") {
-        router.showScreen(.push) { _ in TransactionHistory(orderVM: vm.orderVM) }
+        router.showScreen(.push) { _ in TransactionHistory(orderVM: orderVM) }
       },
       ProfileMenuItem(title: "Q & A") {
         router.showScreen(.push) { _ in QuestionView() }
@@ -36,7 +38,7 @@ struct ProfileView: View {
       router.showScreen(.push) { _ in SecurePolicyView() }
     },
     ProfileMenuItem(title: "Logout") {
-      vm.appState.logout()
+      appState.logout()
     }]
   }
 }
@@ -99,6 +101,6 @@ struct ProfileMenuItem: Identifiable {
 }
 
 #Preview {
-  ProfileView(vm: MainViewModel())
+  ProfileView(appState: AppState(), authVM: AuthViewModel(), orderVM: OrderViewModel())
     .previewRouter()
 }

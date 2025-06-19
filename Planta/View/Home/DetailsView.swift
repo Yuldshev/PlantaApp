@@ -2,9 +2,8 @@ import SwiftUI
 
 struct DetailsView: View {
   let item: Goods
-  @ObservedObject var vm: MainViewModel
-  
-  @State private var quantity = 0
+  @ObservedObject var cartVM: CartViewModel
+  @ObservedObject var mainVM: MainViewModel
   @Environment(\.router) var router
   
   let information = [
@@ -14,7 +13,7 @@ struct DetailsView: View {
   ]
   
   var body: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    ScrollView(.vertical, showsIndicators: false) {
       ImageItem
       
       VStack(alignment: .leading, spacing: 20) {
@@ -24,9 +23,8 @@ struct DetailsView: View {
       }
       .padding(.horizontal, 48)
       
-      Spacer()
-      
       Order
+        .padding(.top, 110)
     }
     .inlineNavigation(title: item.name, isShow: true)
   }
@@ -35,13 +33,18 @@ struct DetailsView: View {
     VStack {
       Rectangle()
         .fill(.appLight)
-        .frame(height: 240)
-        .overlay {
+        .overlay(alignment: .bottom) {
           Image(item.image)
             .resizable()
             .scaledToFit()
+            .scrollTransition { content, phase in
+              content
+                .scaleEffect(phase.isIdentity ? 1 : 1.5)
+                .offset(y: phase.isIdentity ? 0 : -80)
+            }
         }
     }
+    .frame(height: 240)
   }
   
   private var CategoryText: some View {
@@ -97,25 +100,25 @@ struct DetailsView: View {
   private var Order: some View {
     VStack {
       HStack {
-        CustomPicker(quantity: $quantity, isTextHidden: true)
-          .environmentObject(vm)
+        CustomPicker(cartVM: cartVM, item: item, isTextHidden: true)
         
         Spacer()
         
         VStack {
           Text("Subtotal")
             .body(type: .regular)
-          Text((item.price * Double(quantity)).formattedNumber)
+          Text((item.price * Double(cartVM.totalCount)).formattedNumber)
             .h1()
         }
       }
       
-      CustomButton(text: "Order Now", color: quantity > 0 ? .accent : .appLightGray) {
-        Task { await vm.cartVM.saveCart(item: item, quantity: quantity) }
-        router.dismissPushStack()
-        vm.tab = .order
+      CustomButton(text: "Order Now", color: cartVM.totalCount > 0 ? .accent : .appLightGray) {
+        Task {
+          router.dismissPushStack()
+          mainVM.tab = .order
+        }
       }
-      .disabled(quantity < 1)
+      .disabled(cartVM.totalCount < 1)
       
     }
     .padding(.horizontal, 24)
@@ -125,7 +128,7 @@ struct DetailsView: View {
 #Preview {
   let goods = Goods(name: "Dracaena reflexa", category: .indoor, image: "outdoor-1", price: 150)
   
-  return DetailsView(item: goods, vm: MainViewModel())
+  return DetailsView(item: goods, cartVM: CartViewModel(), mainVM: MainViewModel())
     .previewRouter()
 }
 

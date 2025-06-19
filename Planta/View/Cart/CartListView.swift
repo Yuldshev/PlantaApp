@@ -1,9 +1,7 @@
 import SwiftUI
 
 struct CartListView: View {
-  @ObservedObject var vm: CartViewModel
-  
-  @State private var quantity = 0
+  @ObservedObject var cartVM: CartViewModel
   var item: Cart
   
   var body: some View {
@@ -29,11 +27,10 @@ struct CartListView: View {
           .foregroundStyle(.accent)
         
         HStack(alignment: .bottom, spacing: 24) {
-          CustomPicker(quantity: $quantity, isTextHidden: false)
-            .environmentObject(vm)
+          CustomPicker(cartVM: cartVM, item: item.goods, isTextHidden: false)
             .frame(width: 120)
           
-          Button {  vm.remove(item.goods) } label: {
+          Button {  cartVM.remove(item.goods) } label: {
             Text("Remove")
               .sub(type: .regular)
               .foregroundStyle(.black)

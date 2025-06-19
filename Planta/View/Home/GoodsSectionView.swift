@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct GoodsSectionView<Destination: View>: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var cartVM: CartViewModel
+  @ObservedObject var mainVM: MainViewModel
   @Environment(\.router) var router
   
   let title: String
@@ -24,7 +25,7 @@ struct GoodsSectionView<Destination: View>: View {
         ForEach(limitedItems) { item in
           Button {
             router.showScreen(.push) { _ in
-              DetailsView(item: item, vm: vm)
+              DetailsView(item: item, cartVM: cartVM, mainVM: mainVM)
             }
           } label: {
             CartGoodsView(item: item)

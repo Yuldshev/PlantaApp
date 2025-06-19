@@ -1,7 +1,9 @@
 import SwiftUI
 
 struct HomeView: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var cartVM: CartViewModel
+  @ObservedObject var orderVM: OrderViewModel
+  @ObservedObject var mainVM: MainViewModel
   @Environment(\.router) var router
 
   
@@ -10,10 +12,10 @@ struct HomeView: View {
       VStack(spacing: 0) {
         Hero
         VStack {
-          GoodsSectionView(vm: vm, title: "Plants", items: indoorList, limit: nil) {
-            ListPlantsView(vm: vm) }
+          GoodsSectionView(cartVM: cartVM, mainVM: mainVM, title: "Plants", items: indoorList, limit: nil) {
+            ListPlantsView(cartVM: cartVM, mainVM: mainVM) }
           
-          GoodsSectionView(vm: vm, title: "Equipments", items: equipmentList, limit: 6) { ListEquipmentView(vm: vm) }
+          GoodsSectionView(cartVM: cartVM, mainVM: mainVM, title: "Equipments", items: equipmentList, limit: 6) { ListEquipmentView(cartVM: cartVM, mainVM: mainVM) }
           BannerBalm
         }
         .padding(.horizontal, 24)
@@ -29,9 +31,9 @@ struct HomeView: View {
         .frame(height: 62)
       
       Button {
-        router.showScreen(.push) { _ in ListPlantsView(vm: vm) }
+        router.showScreen(.push) { _ in ListPlantsView(cartVM: cartVM, mainVM: mainVM) }
       } label: {
-        HomeHiroView(vm: vm)
+        HomeHiroView(mainVM: mainVM)
       }
     }
     .scrollTransition { content, phase in
@@ -48,7 +50,7 @@ struct HomeView: View {
       
       Button {
         router.showScreen(.push) { _ in
-          ListEquipmentView(vm: vm)
+          ListEquipmentView(cartVM: cartVM, mainVM: mainVM)
         }
       } label: {
         HStack {
@@ -78,6 +80,6 @@ struct HomeView: View {
 }
 
 #Preview {
-  HomeView(vm: MainViewModel())
+  HomeView(cartVM: CartViewModel(), orderVM: OrderViewModel(), mainVM: MainViewModel())
     .previewRouter()
 }

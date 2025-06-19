@@ -1,26 +1,31 @@
 import SwiftUI
 
 struct MainView: View {
-  @ObservedObject var vm: MainViewModel
+  @ObservedObject var appState: AppState
+  @ObservedObject var authVM: AuthViewModel
+  
+  @StateObject var orderVM = OrderViewModel()
+  @StateObject var cartVM = CartViewModel()
+  @StateObject var mainVM = MainViewModel()
   
   var body: some View {
     ZStack {
       VStack {
         Group {
-          switch vm.tab {
-            case .home: HomeView(vm: vm)
+          switch mainVM.tab {
+            case .home: HomeView(cartVM: cartVM, orderVM: orderVM, mainVM: mainVM)
             case .search: SearchView()
-            case .order: CartView(vm: vm)
-            case .profile: ProfileView(vm: vm)
+            case .order: CartView(cartVM: cartVM, orderVM: orderVM, authVM: authVM)
+            case .profile: ProfileView(appState: appState, authVM: authVM, orderVM: orderVM)
           }
         }
         .transition(.move(edge: .bottom).combined(with: .opacity))
-        .animation(.easeInOut, value: vm.tab)
+        .animation(.easeInOut, value: mainVM.tab)
       }
       
       VStack {
         Spacer()
-        CustomTabView(selectedTab: $vm.tab)
+        CustomTabView(selectedTab: $mainVM.tab)
       }
     }
   }
@@ -28,6 +33,6 @@ struct MainView: View {
 
 //MARK: - Preview
 #Preview {
-  MainView(vm: MainViewModel())
+  MainView(appState: AppState(), authVM: AuthViewModel(), orderVM: OrderViewModel())
     .previewRouter()
 }

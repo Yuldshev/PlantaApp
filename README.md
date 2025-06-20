@@ -1,3 +1,5 @@
+![](assets/planta_banner.png)
+
 # 🌿 Planta
 Planta is a modern iOS application for buying flowers and gardening tools online. The app offers a user-friendly interface, fast product search, and a simple checkout experience.
 
@@ -38,6 +40,10 @@ Swift | SwiftUI | SwiftConcurrency | MVVM | IOS18
 <details>
   <summary> Details (Click to expand) </summary>
   <br>
+
+  | ![](assets/planta_home.png) | ![](assets/planta_cat.png) | ![](assets/planta_detail.png) |
+  |-------------------|-------------------|-------------------|
+  | ![](assets/planta_cart.png) | ![](assets/planta_profile.png) |
 </details>
 
 ## 🚀 Getting Started
